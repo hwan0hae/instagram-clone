@@ -1,46 +1,43 @@
-# Getting Started with Create React App
+# boiler-plate
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## config
 
-## Available Scripts
+비밀정보 보호는 gitignore에서 올릴때 배제되게 해야한다.
 
-In the project directory, you can run:
+### package.json
 
-### `npm start`
+배포할 때 어떤 라이브러리가 포함되느냐 차이이다.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- dependencies
+  설치된 라이브러리 포함
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- devDependencies (개발자용)
+  개발할 때 필요한 라이브러리기 때문에 배포할 때 포함되지 않는다.
 
-### `npm test`
+- type:"module"
+  es module을 사용하여 import, export 사용 가능
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+# 1월 12일 목요일
 
-### `npm run build`
+Clinet
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- Login시 Recoil(상태 관리 라이브러리) 통하여 로그인 유무 및 로그인 유저 정보 관리
+- Router에서 useEffect로 수시로(렌더링) loginSucces 쿼리를 통해 로그인 유무 확인(cookie-accessToken) 체크하여 인증 / 권한(로그인)에 따라 알맞은 페이지 로더
+- 엑세스 토큰 만료시 로그아웃 처리 (현재) > 리프레시 토큰 이용 해서 갱신 해야함 (할일)
+- 엑세스 토큰 만료 or 로그아웃시 Login 페이지로 이동
+- 없는페이지 접속시 리다이랙션('/') 처리 로그인 유무에 따라 (Home or Login)페이지 이동
+- Login시 Login한 User정보로 페이지 구현(진행중)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Server
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- jwt 공부 및 테스트(accessToken, refreshToken)
+- jwt 사용하여 토큰 생성
+- login 요청시 DB확인 후 브라우저 쿠키에 accessToken, refreshToken 저장
+- loginSuccess 요청시 password을 제외한 User 정보 response
+- logout 요청 처리
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+-- 해야 할 일 --
+// 이렇게 로직을짜도 되는것인가 .... 확인 필요
+//헤더 hover text 애니메이션 사라지지 않는 버그 있음 체크 필요
+// 엑세스 토큰 만료시 로그아웃 될것인데.. 갱신 어떻게 할 것인가 ? > refreshtoken db저장?
+// React Ref를 이용하여 Dom객체에 직접 접근 -> 페이지가 로딩될때 아이디 입력창이 자동으로 Focus됨
