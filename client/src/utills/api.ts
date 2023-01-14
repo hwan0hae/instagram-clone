@@ -26,8 +26,8 @@ export async function registerUser(info: IRegistrtUser) {
 
 export async function loginSuccess() {
   try {
-    const user = await axios.get("/api/uesrs/login/success");
-    return user.data;
+    const data = await axios.get("/api/uesrs/login/success");
+    return data.data;
   } catch (error) {
     console.log(error);
   }

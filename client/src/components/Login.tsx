@@ -142,7 +142,7 @@ export default function Login() {
     (userInfo: ILoginUser) => loginUser(userInfo),
     {
       onSuccess: (data) => {
-        if (data.loginSucess) {
+        if (data.loginSuccess) {
           queryClient.invalidateQueries("LoginSuccess");
           setLoginRequestData("");
         } else {

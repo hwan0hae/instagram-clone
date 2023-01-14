@@ -21,10 +21,11 @@ export default function Router() {
   const loginUser = useQuery("LoginSuccess", loginSuccess);
 
   useEffect(() => {
-    if (loginUser.data) {
+    if (loginUser.data?.isAuth) {
       setIsLogin(true);
       setUser(loginUser.data);
     } else {
+      console.log(loginUser.data?.message);
       setIsLogin(false);
       // setUser({});
     }

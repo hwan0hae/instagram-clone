@@ -8,9 +8,10 @@ export const register = (req, res) => {
   const user = new User(req.body);
 
   user.save((err, userInfo) => {
-    if (err) return res.json({ sucess: false, err });
+    console.log(err);
+    if (err) return res.json({ success: false, err });
     return res.status(200).json({
-      sucess: true,
+      success: true,
     });
   });
 };
@@ -22,7 +23,7 @@ export const login = (req, res) => {
   User.findOne({ email }, (err, user) => {
     if (!user) {
       return res.json({
-        loginSucess: false,
+        loginSuccess: false,
         message: "제공된 이메일에 해당하는 유저가 없습니다.",
       });
     }
@@ -31,7 +32,7 @@ export const login = (req, res) => {
     user.comparePassword(password, (err, isMatch) => {
       if (!isMatch)
         return res.json({
-          loginSucess: false,
+          loginSuccess: false,
           message: "비밀번호가 틀렸습니다.",
         });
 
@@ -62,7 +63,7 @@ export const login = (req, res) => {
           httpOnly: true,
         });
 
-        res.status(200).json({ loginSucess: true, userId: user._id });
+        res.status(200).json({ loginSuccess: true, userId: user._id });
       } catch (error) {
         res.status(500).json(error);
       }
@@ -73,7 +74,7 @@ export const login = (req, res) => {
       //   res
       //     .cookie("x_auth", user.token)
       //     .status(200)
-      //     .json({ loginSucess: true, userId: user._id });
+      //     .json({ loginSuccess: true, userId: user._id });
       // });
     });
   });
@@ -124,21 +125,38 @@ export const refreshToken = (req, res) => {
   }
 };
 
-export const loginSucess = (req, res) => {
+export const loginSuccess = (req, res) => {
   try {
-    const token = req.cookies.accessToken;
+    if (req.cookies.accessToken) {
+      const token = req.cookies.accessToken;
 
-    const data = jwt.verify(token, process.env.ACCESS_SECRET);
+      const data = jwt.verify(token, process.env.ACCESS_SECRET);
 
-    User.findOne({ _id: data._id }, (err, user) => {
-      if (err) throw err;
+      User.findOne({ _id: data._id }, (err, user) => {
+        if (err) throw err;
 
-      const { password, ...others } = user._doc;
+        const { password, ...others } = user._doc;
 
-      res.status(200).json(others);
-    });
+        res.status(200).json({ isAuth: true, ...others });
+      });
+    } else {
+      throw {
+        name: "NoTokenError",
+        message: "There is no accesToken in the cookie.",
+      };
+    }
   } catch (error) {
-    res.status(500).json(error);
+    switch (error.name) {
+      case "TokenExpiredError":
+        res.status(200).json({ isAuth: false, message: error.message });
+        break;
+      case "NoTokenError":
+        res.status(200).json({ isAuth: false, message: error.message });
+        break;
+      default:
+        res.status(500).json(error);
+    }
+    //아마 여기서 만료시 리프레시 토큰 사용해서 갱신
   }
 };
 

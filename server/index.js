@@ -8,7 +8,7 @@ import auth from "./middleware/auth.js";
 import {
   register,
   login,
-  loginSucess,
+  loginSuccess,
   accessToken,
   refreshToken,
   logout,
@@ -37,7 +37,7 @@ app.get("/", (req, res) => {
 
 app.post("/api/users/register", register);
 app.post("/api/users/login", login);
-app.get("/api/uesrs/login/success", loginSucess);
+app.get("/api/uesrs/login/success", loginSuccess);
 app.get("/api/users/accesstoken", accessToken);
 app.get("/api/users/refreshtoken", refreshToken);
 app.get("/api/users/logout", logout);
@@ -60,8 +60,8 @@ app.get("/api/users/auth", auth, (req, res) => {
 
 // app.get("/api/users/logout", auth, (req, res) => {
 //   User.findOneAndUpdate({ _id: req.user._id }, { token: "" }, (err, user) => {
-//     if (err) return res.json({ sucess: false, err });
-//     return res.status(200).send({ sucess: true });
+//     if (err) return res.json({ success: false, err });
+//     return res.status(200).send({ success: true });
 //   });
 // });
 

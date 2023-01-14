@@ -45,7 +45,11 @@ export default function Register() {
       .required("이메일을 입력해주세요")
       .email("이메일 형식이 아닙니다."),
     name: yup.string().required("이름을 입력해주세요"),
-    id: yup.string().required("아이디를 입력해주세요"),
+    id: yup
+      .string()
+      .required("아이디를 입력해주세요")
+      .min(5, "최소 5자 이상 가능합니다")
+      .max(20, "최대 20자 까지만 가능합니다"),
     password: yup
       .string()
       .required("비밀번호를 입력해주세요")
@@ -73,7 +77,7 @@ export default function Register() {
     (userInfo: IRegistrtUser) => registerUser(userInfo),
     {
       onSuccess: (data) => {
-        if (data.sucess) {
+        if (data.success) {
           setRegisterRequestData("");
           navigate("/");
         } else if (data.err.code === 11000) {

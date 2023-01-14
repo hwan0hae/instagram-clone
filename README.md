@@ -36,8 +36,18 @@ Server
 - loginSuccess 요청시 password을 제외한 User 정보 response
 - logout 요청 처리
 
+# 1월 15일 일요일
+
 -- 해야 할 일 --
 // 이렇게 로직을짜도 되는것인가 .... 확인 필요
 //헤더 hover text 애니메이션 사라지지 않는 버그 있음 체크 필요
 // 엑세스 토큰 만료시 로그아웃 될것인데.. 갱신 어떻게 할 것인가 ? > refreshtoken db저장?
 // React Ref를 이용하여 Dom객체에 직접 접근 -> 페이지가 로딩될때 아이디 입력창이 자동으로 Focus됨
+// auth등 필요없는 구문 지우기
+
+Cilent
+
+Server
+
+- LoginSuccess 통신 Error별 예외처리(try-catch)
+- LoginSuccess 통신 isAuth 통해 Client 인가 여부 확인
