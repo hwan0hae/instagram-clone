@@ -13,11 +13,11 @@ import Register from "./Register";
 import { useQuery } from "react-query";
 import { loginSuccess } from "../utills/api";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { isLoginAtom, IUser, userAtom } from "../utills/atoms";
+import { isLoginAtom, userAtom } from "../utills/atoms";
 export default function Router() {
   const [isLogin, setIsLogin] = useRecoilState<boolean>(isLoginAtom);
 
-  const setUser = useSetRecoilState<IUser>(userAtom);
+  const setUser = useSetRecoilState(userAtom);
   const loginUser = useQuery("LoginSuccess", loginSuccess);
 
   useEffect(() => {
@@ -25,9 +25,8 @@ export default function Router() {
       setIsLogin(true);
       setUser(loginUser.data);
     } else {
-      console.log(loginUser.data?.message);
       setIsLogin(false);
-      // setUser({});
+      setUser(null);
     }
   }, [loginUser, setIsLogin, setUser]);
 

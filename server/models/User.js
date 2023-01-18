@@ -34,6 +34,10 @@ const userSchema = mongoose.Schema({
   tokenExp: {
     type: Number,
   },
+  token: {
+    type: String,
+    default: "",
+  },
 });
 
 userSchema.pre("save", function (next) {
@@ -62,6 +66,7 @@ userSchema.methods.comparePassword = function (plainPassword, cb) {
   });
 };
 
+// };
 // userSchema.methods.generateToken = function (cb) {
 //   var user = this;
 //   // jsonwebtoken을 이용해서 token을 생성하기

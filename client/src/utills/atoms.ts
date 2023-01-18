@@ -19,7 +19,7 @@ export interface IUser {
   _id: string;
 }
 
-export const userAtom = atom<IUser>({
+export const userAtom = atom<IUser | null>({
   key: "user",
-  default: { email: "", id: "", name: "", role: 0, __v: 0, _id: "" },
+  default: null,
 });

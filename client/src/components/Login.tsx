@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
-import { QueryClient, useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { ILoginUser, loginUser } from "../utills/api";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -173,12 +173,11 @@ export default function Login() {
     });
   };
 
-  const accessToken = () => {
-    axios.get("/api/users/accesstoken");
-  };
-  const refreshToken = () => {
+  const refresh = (e: any) => {
+    e.preventDefault();
     axios.get("/api/users/refreshtoken");
   };
+
   return (
     <Wrapper>
       <Container>
@@ -224,6 +223,7 @@ export default function Login() {
               )}
             </LoginBtn>
 
+            <button onClick={refresh}> 리프레시</button>
             {loginUserMutation.isSuccess && (
               <div>
                 <ErrorText style={{ textAlign: "center" }}>
@@ -232,8 +232,6 @@ export default function Login() {
               </div>
             )}
           </LoginForm>
-          <button onClick={accessToken}>accessToken</button>
-          <button onClick={refreshToken}>refreshToken</button>
         </Box>
         <Box style={{ height: 63, flexDirection: "row" }}>
           계정이 없으신가요? &nbsp;

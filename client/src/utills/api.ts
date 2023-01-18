@@ -1,4 +1,5 @@
 import axios from "axios";
+import api from "./apiController";
 
 export interface ILoginUser {
   email: string;
@@ -26,8 +27,8 @@ export async function registerUser(info: IRegistrtUser) {
 
 export async function loginSuccess() {
   try {
-    const data = await axios.get("/api/uesrs/login/success");
-    return data.data;
+    const request = await api.get("/api/users/login/success");
+    return request.data;
   } catch (error) {
     console.log(error);
   }
@@ -35,6 +36,12 @@ export async function loginSuccess() {
 
 export async function auth() {
   const request = await axios.get("/api/users/auth");
+
+  return request.data;
+}
+
+export async function logout() {
+  const request = await axios.get("/api/users/logout");
 
   return request.data;
 }

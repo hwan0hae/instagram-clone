@@ -3,9 +3,10 @@ import { Link, useMatch, useNavigate } from "react-router-dom";
 import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSetRecoilState } from "recoil";
-import { isDarkAtom } from "../../utills/atoms";
+import { isDarkAtom, isLoginAtom, userAtom } from "../../utills/atoms";
 import axios from "axios";
 import { useQueryClient } from "react-query";
+import { logout } from "../../utills/api";
 
 const Nav = styled.div`
   display: flex;
@@ -222,6 +223,8 @@ export default function Heeader() {
   const tabMenuRef = useRef<HTMLDivElement>(null);
   const tabRef = useRef<HTMLDivElement>(null);
   const setIsDarkMode = useSetRecoilState(isDarkAtom);
+  const setUser = useSetRecoilState(userAtom);
+  const setIsLogin = useSetRecoilState(isLoginAtom);
   const [tabMenuVisible, setTabMenuVisible] = useState<boolean>(false);
   const tabToggleFn = () => setTabMenuVisible((prev) => !prev);
 
@@ -242,9 +245,10 @@ export default function Heeader() {
   }, [tabMenuRef]);
 
   const onLogout = async () => {
-    const response = await axios.get("/api/users/logout");
+    setIsLogin(false);
+    setUser(null);
+    logout();
     queryClient.invalidateQueries("LoginSuccess");
-    console.log(response.data);
   };
 
   return (

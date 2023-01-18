@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { Link, Outlet, useMatch } from "react-router-dom";
 import { SvgBtn, Overlay, TabItems, Svg } from "./Home";
 import { useRecoilValue } from "recoil";
@@ -206,7 +206,7 @@ export default function MyPage() {
           </ProfillImgContainer>
           <ProfillInfo>
             <ProfillHeader>
-              <ProfillId> {user.id}</ProfillId>
+              <ProfillId> {user?.id}</ProfillId>
               <ProfillBtn>프로필 편집</ProfillBtn>
               <ProfillBtn>광고 도구</ProfillBtn>
               <SvgBtn style={{ backgroundColor: "transparent" }}>

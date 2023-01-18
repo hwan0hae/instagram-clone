@@ -275,7 +275,7 @@ export default function Home() {
             <FeedTitle>
               <ProfillImg style={{ width: "32px", height: "32px" }} />
               <ProfillId style={{ marginLeft: "10px", fontWeight: 600 }}>
-                {user.id}
+                {user?.id}
               </ProfillId>
             </FeedTitle>
             <SvgBtn onClick={() => setOnTabClicked(true)}>
