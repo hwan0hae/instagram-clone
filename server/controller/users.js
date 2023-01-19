@@ -41,14 +41,14 @@ export const login = (req, res) => {
         const accessToken = jwt.sign(
           { _id: user._id },
           process.env.ACCESS_SECRET,
-          { expiresIn: "3s", issuer: "hwan_0_hae" }
+          { expiresIn: "30m", issuer: "hwan_0_hae" }
         );
 
         //refresh Token 발급
         const refreshToken = jwt.sign(
           { _id: user._id },
           process.env.REFRESH_SECRET,
-          { expiresIn: "10s", issuer: "hwan_0_hae" }
+          { expiresIn: "24h", issuer: "hwan_0_hae" }
         );
 
         //token 전송
@@ -108,75 +108,69 @@ export const accessToken = (req, res) => {
 
 export const refreshToken = (req, res) => {
   //용도 : access token을 갱신
-  console.log("4");
 
   try {
-    console.log("5");
-    // if (req.cookies.refreshToken) {
-    const token = req.cookies.refreshToken;
-    //로그인시 DB에 저장한 refreshToken과 비교
-    User.findOne({ token }, (err, user) => {
-      console.log(err);
-      if (err) throw err;
-      console.log("6");
-
-      //만료된 토큰이면 여기서 걸러진다...
-
-      const data = jwt.verify(token, process.env.REFRESH_SECRET);
-      console.log("7");
-      User.findOne({ _id: data._id }, (err, user) => {
+    if (req.cookies.refreshToken) {
+      const token = req.cookies.refreshToken;
+      //로그인시 DB에 저장한 refreshToken과 비교
+      User.findOne({ token }, (err, user) => {
         if (err) throw err;
 
-        //access token 새로 발급
-        const accessToken = jwt.sign(
-          { _id: user._id },
-          process.env.ACCESS_SECRET,
-          { expiresIn: "3s", issuer: "Hwan_0_hae" }
-        );
+        //만료된 토큰이면 여기서 걸러진다 (검증).
+        jwt.verify(token, process.env.REFRESH_SECRET, (err, decode) => {
+          if (err) {
+            res.cookie("accessToken", "");
+            res.status(401).json({ message: err.message });
+            return;
+          }
+          //access token 새로 발급
+          const accessToken = jwt.sign(
+            { _id: user._id },
+            process.env.ACCESS_SECRET,
+            { expiresIn: "30m", issuer: "Hwan_0_hae" }
+          );
 
-        res.cookie("accessToken", accessToken, {
-          secure: false,
-          httpOnly: true,
+          res.cookie("accessToken", accessToken, {
+            secure: false,
+            httpOnly: true,
+          });
+
+          res.status(200).json("Access Token Recreated");
+          return;
         });
-
-        res.status(200).json("Access Token Recreated");
       });
-    });
-    // } else {
-    //   res.status(200).json("no refreshToken");
-    // }
+    } else {
+      res.status(200).json("no refreshToken");
+    }
   } catch (error) {
     console.log(error);
 
     //refreshToken 에러시(만료가 됐거나, 디비랑 일치하지 않을시) accessToken 값 없에서 로그아웃 시킴
-    console.log("에러용");
     res.cookie("accessToken", "");
     res.status(500).json(error);
   }
 };
-// 여기봐여기! 엑세스토큰 버튼 만들어서 만료나 없을때 똑같이해서 에러ㄸ는지 확인해보자
 export const loginSuccess = (req, res) => {
   try {
-    console.log("11");
     if (req.cookies.accessToken) {
-      console.log("22");
       const token = req.cookies.accessToken;
 
-      const data = jwt.verify(token, process.env.ACCESS_SECRET);
-
-      User.findOne({ _id: data._id }, (err, user) => {
+      jwt.verify(token, process.env.ACCESS_SECRET, (err, data) => {
         if (err) throw err;
 
-        const { password, token, ...others } = user._doc;
+        User.findOne({ _id: data._id }, (err, user) => {
+          if (err) throw err;
 
-        res.status(200).json({ isAuth: true, ...others });
+          const { password, token, ...others } = user._doc;
+
+          res.status(200).json({ isAuth: true, ...others });
+        });
       });
     } else {
       //토큰 없을시
       res.status(200).json({ isAuth: false, message: "no Token" });
     }
   } catch (error) {
-    console.log("33");
     //401에러 인증되지 않았을때 에러(ex. 토큰만료)
     res.status(401).json(error);
   }

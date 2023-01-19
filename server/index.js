@@ -26,7 +26,7 @@ app.use(cookieParser());
 mongoose.set("strictQuery", true);
 mongoose
   .connect(config.mongoURI)
-  .then(() => console.log("몽고 연결..."))
+  .then(() => console.log("MonggoDB Connect..."))
   .catch((err) => console.log(err));
 
 app.get("/", (req, res) => {

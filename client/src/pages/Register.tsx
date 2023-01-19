@@ -17,7 +17,7 @@ import {
   PasswordVisibleBtn,
   IPasswordType,
 } from "../components/Login";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation } from "react-query";
 import { IRegistrtUser, registerUser } from "../utills/api";
 const Text = styled.h2`
@@ -67,12 +67,17 @@ export default function Register() {
     register,
     handleSubmit,
     formState: { errors },
+    setFocus,
   } = useForm<IForm>({
     mode: "onChange",
     reValidateMode: "onChange",
     resolver: yupResolver(formSchema),
   });
   const [registerRequestData, setRegisterRequestData] = useState<String>("");
+  const [passwordType, setPasswordType] = useState<IPasswordType>({
+    type: "password",
+    visible: false,
+  });
   const registerMutation = useMutation(
     (userInfo: IRegistrtUser) => registerUser(userInfo),
     {
@@ -88,6 +93,19 @@ export default function Register() {
       },
     }
   );
+  useEffect(() => {
+    const firstError = (
+      Object.keys(errors) as Array<keyof typeof errors>
+    ).reduce<keyof typeof errors | null>((field, a) => {
+      const fieldKey = field as keyof typeof errors;
+      console.log(`field:${field},a:${a}`);
+      return !!errors[fieldKey] ? field : a;
+    }, null);
+    if (firstError) {
+      setFocus(firstError);
+    }
+  }, [errors, setFocus]);
+
   const onSubmit = (data: IForm) => {
     const info = {
       email: data.email,
@@ -97,10 +115,6 @@ export default function Register() {
     };
     registerMutation.mutate(info);
   };
-  const [passwordType, setPasswordType] = useState<IPasswordType>({
-    type: "password",
-    visible: false,
-  });
 
   const handlePasswordType = () => {
     setPasswordType(() => {

@@ -51,7 +51,7 @@ instance.interceptors.response.use(
         const originalRequest = config;
         // token refresh 요청
 
-        const { data } = await axios.get(
+        await axios.get(
           `/api/users/refreshtoken` // token refresh api
         );
 

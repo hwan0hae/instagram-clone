@@ -5,9 +5,8 @@ import { useMutation, useQueryClient } from "react-query";
 import { ILoginUser, loginUser } from "../utills/api";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import PacmanLoader from "react-spinners/PacmanLoader";
-import axios from "axios";
 
 export const Wrapper = styled.div`
   display: flex;
@@ -131,6 +130,7 @@ export default function Login() {
     register,
     handleSubmit,
     formState: { errors },
+    setFocus,
   } = useForm<IForm>({
     mode: "onSubmit",
     reValidateMode: "onChange",
@@ -138,6 +138,10 @@ export default function Login() {
   });
   const queryClient = useQueryClient();
   const [loginRequestData, setLoginRequestData] = useState<String>("");
+  const [passwordType, setPasswordType] = useState<IPasswordType>({
+    type: "password",
+    visible: false,
+  });
   const loginUserMutation = useMutation(
     (userInfo: ILoginUser) => loginUser(userInfo),
     {
@@ -151,6 +155,18 @@ export default function Login() {
       },
     }
   );
+  useEffect(() => {
+    const firstError = (
+      Object.keys(errors) as Array<keyof typeof errors>
+    ).reduce<keyof typeof errors | null>((field, a) => {
+      const fieldKey = field as keyof typeof errors;
+      console.log(`field:${field},a:${a}`);
+      return !!errors[fieldKey] ? field : a;
+    }, null);
+    if (firstError) {
+      setFocus(firstError);
+    }
+  }, [errors, setFocus]);
   const onSubmit = (data: IForm) => {
     const info = {
       email: data.email,
@@ -159,11 +175,6 @@ export default function Login() {
     loginUserMutation.mutate(info);
   };
 
-  const [passwordType, setPasswordType] = useState<IPasswordType>({
-    type: "password",
-    visible: false,
-  });
-
   const handlePasswordType = () => {
     setPasswordType(() => {
       if (!passwordType.visible) {
@@ -171,11 +182,6 @@ export default function Login() {
       }
       return { type: "password", visible: false };
     });
-  };
-
-  const refresh = (e: any) => {
-    e.preventDefault();
-    axios.get("/api/users/refreshtoken");
   };
 
   return (
@@ -222,8 +228,6 @@ export default function Login() {
                 "로그인"
               )}
             </LoginBtn>
-
-            <button onClick={refresh}> 리프레시</button>
             {loginUserMutation.isSuccess && (
               <div>
                 <ErrorText style={{ textAlign: "center" }}>

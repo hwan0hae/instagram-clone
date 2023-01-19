@@ -57,29 +57,25 @@ Server
 
 - 내용 복습 및 정리
 
-Client
-
--
-
 Server
 
 - no accessToken은 에러처리 X.
 - refreshToken 갱신시 쿠키와 DB 토큰 비교 확인
 
+# 1월 18일 목요일
+
+Client
+
+- form submit valid check > error input focus
+
+Sever
+
+- refreshToken 만료시 로그아웃처리(accessToken값 제거) > 새로 로그인 해야함
+  > > 서버 꺼지던 문제 err발생 시(만료) return으로 후 동작 안되게해서 막긴했음
+
 -- 해야 할 일 --
 
-- refreshToken 만료시 error accessToken 값 없애서 로그아웃처리(새로 로그인하여 토큰 발급 받아야함 / 안할시 accessToken 만료되어 리프레시 토큰 갱신 요청시 리프레시 또한 만료되어 렌더링 될때마다 에러 뜸 )
-
-refresh토큰 만료시
-
-- 응답 없음 에러(Gateway Timeout))처리 급함
-  엑세스토큰 버튼 만들어서 만료나 없을때 똑같이해서 에러는지 확인해보자
-
----
-
 - 만료 전 시간체크 갱신 (만료전 시간체크 해서 해줘야되는가 확인 payload 만료시간을 타임으로줘서 해도되지않을까싶음)
-
-// 이렇게 로직을짜도 되는것인가 .... 확인 필요 (인혁이형 확인 ㅇ 구글링 고고)
 
 // React Ref를 이용하여 Dom객체에 직접 접근 -> 페이지가 로딩될때 아이디 입력창이 자동으로 Focus됨
 //헤더 hover text 애니메이션 사라지지 않는 버그 있음 체크 필요

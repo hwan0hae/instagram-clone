@@ -1,14 +1,14 @@
 import { useEffect } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
-import Heeader from "../components/layout/Header";
+import Header from "../components/layout/Header";
 import Login from "../components/Login";
 import Home from "./Home";
 import MyPage from "./MyPage";
-import MypageFeed from "./MyPageFeed";
-import MypageReels from "./MyPageReels";
-import MypageSaved from "./MyPageSaved";
-import MypageTagged from "./MyPageTagged";
+import MyPageFeed from "./MyPageFeed";
+import MyPageReels from "./MyPageReels";
+import MyPageSaved from "./MyPageSaved";
+import MyPageTagged from "./MyPageTagged";
 import Register from "./Register";
 import { useQuery } from "react-query";
 import { loginSuccess } from "../utills/api";
@@ -34,15 +34,15 @@ export default function Router() {
     <BrowserRouter basename={process.env.PUBLIC_URL}>
       {loginUser.isLoading ? null : isLogin ? (
         <>
-          <Heeader />
+          <Header />
 
           <Routes>
             <Route index path="/" element={<Home />} />
             <Route path="/:id" element={<MyPage />}>
-              <Route index path="/:id" element={<MypageFeed />} />
-              <Route path="/:id/reels" element={<MypageReels />} />
-              <Route path="/:id/saved" element={<MypageSaved />} />
-              <Route path="/:id/tagged" element={<MypageTagged />} />
+              <Route index path="/:id" element={<MyPageFeed />} />
+              <Route path="/:id/reels" element={<MyPageReels />} />
+              <Route path="/:id/saved" element={<MyPageSaved />} />
+              <Route path="/:id/tagged" element={<MyPageTagged />} />
             </Route>
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
