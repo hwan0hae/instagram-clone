@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRecoilValue } from "recoil";
 import { userAtom } from "../utills/atoms";
+import { Helmet } from "react-helmet-async";
 
 const Wrapper = styled.div`
   width: calc(100vw - 72px);

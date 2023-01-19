@@ -5,6 +5,7 @@ import { Link, Outlet, useMatch } from "react-router-dom";
 import { SvgBtn, Overlay, TabItems, Svg } from "./Home";
 import { useRecoilValue } from "recoil";
 import { userAtom } from "../utills/atoms";
+import { Helmet } from "react-helmet-async";
 
 const Wrapper = styled.div`
   width: clac(100%-72px);
@@ -199,6 +200,12 @@ export default function MyPage() {
 
   return (
     <Wrapper>
+      <Helmet>
+        <title>
+          {user?.name}(@{user?.id})
+        </title>
+        {/* meta태그 SEO 검색엔진 */}
+      </Helmet>
       <Container>
         <Profill>
           <ProfillImgContainer>

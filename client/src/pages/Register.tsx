@@ -20,6 +20,7 @@ import {
 import { useEffect, useState } from "react";
 import { useMutation } from "react-query";
 import { IRegistrtUser, registerUser } from "../utills/api";
+import { Helmet } from "react-helmet-async";
 const Text = styled.h2`
   font-size: 17px;
   font-weight: 600;
@@ -128,6 +129,10 @@ export default function Register() {
   return (
     <Wrapper>
       <Container>
+        <Helmet>
+          <title>가입하기﹒Instagram</title>
+          {/* meta태그 SEO 검색엔진 */}
+        </Helmet>
         <Box style={{ height: 558 }}>
           <SvgLogoText
             className="logoText"

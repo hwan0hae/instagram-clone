@@ -5,7 +5,8 @@ import { useMutation, useQueryClient } from "react-query";
 import { ILoginUser, loginUser } from "../utills/api";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import PacmanLoader from "react-spinners/PacmanLoader";
 
 export const Wrapper = styled.div`
@@ -186,6 +187,10 @@ export default function Login() {
 
   return (
     <Wrapper>
+      <Helmet>
+        <title>로그인﹒Instagram</title>
+        {/* meta태그 SEO 검색엔진 */}
+      </Helmet>
       <Container>
         <Box style={{ height: 400 }}>
           <SvgLogoText

@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async";
 import { useRecoilValue } from "recoil";
 import { ThemeProvider, createGlobalStyle } from "styled-components";
 import Router from "./pages/Router";
@@ -77,6 +78,14 @@ function App() {
   return (
     <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
       <GlobalStyle />
+      <Helmet>
+        <title>Instagram</title>
+        <meta
+          name="description"
+          content="Create an account or log in to Instagram - A simple, fun & creative way to capture, edit & share photos, videos & messages with friends & family."
+        />
+        {/* meta태그 SEO 검색엔진 */}
+      </Helmet>
       <Router />
     </ThemeProvider>
   );
