@@ -67,15 +67,35 @@ Server
 Client
 
 - form submit valid check > error input focus
+- Helmet 사용 페이지별 title 적용
+- Router Edit 페이지 생성(진행)
+- profile사진 변경 적용중
 
 Sever
 
 - refreshToken 만료시 로그아웃처리(accessToken값 제거) > 새로 로그인 해야함
-  > > 서버 꺼지던 문제 err발생 시(만료) return으로 후 동작 안되게해서 막긴했음
+  > > 서버 꺼지던 문제 err발생 시(만료) return으로 후 동작 막음
+
+# 1월 19일 금요일
+
+Client
+
+- 프로필 이미지 UI 적용
+
+Sever
+
+- 프로필 사진 변경
+- multer middleware 공부(image/video 등 formData 파싱)
+- 프로필 사진 변경 시 사진 서버에 저장 후 경로 db에 저장 전에 있던 프로필 사진은 삭제처리
+- 정적파일 불러오기 express.static (웹 경로 img 띄우기)
+- 렌더링 loginSuccess 마다 login User 정보 프로필 사진 경로도 가져와서 뿌려줌
 
 -- 해야 할 일 --
 
-- 만료 전 시간체크 갱신 (만료전 시간체크 해서 해줘야되는가 확인 payload 만료시간을 타임으로줘서 해도되지않을까싶음)
+// 라우터 \* >> url검색및 새로고침시 다 default 로 보내버리는 이슈
+// 코드 try catch 등 정리
+게시물
 
-// React Ref를 이용하여 Dom객체에 직접 접근 -> 페이지가 로딩될때 아이디 입력창이 자동으로 Focus됨
-//헤더 hover text 애니메이션 사라지지 않는 버그 있음 체크 필요
+# 깃허브 정리
+
+https://velog.io/@laeyoung/%ED%95%98-Frontend-%EA%B0%9C%EB%B0%9C%EC%9E%90%ED%98%95%EB%93%A4

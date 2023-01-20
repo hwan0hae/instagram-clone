@@ -3,9 +3,9 @@ import styled from "styled-components";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRecoilValue } from "recoil";
 import { userAtom } from "../utills/atoms";
-import { Helmet } from "react-helmet-async";
+import { Link } from "react-router-dom";
 
-const Wrapper = styled.div`
+export const Wrapper = styled.div`
   width: calc(100vw - 72px);
   position: relative;
   left: 72px;
@@ -38,7 +38,7 @@ const StroyItem = styled.li`
 
   cursor: pointer;
 `;
-const ProfillImg = styled.img`
+const ProfileImg = styled.img`
   width: 66px;
   height: 66px;
   border: 1px solid ${(props) => props.theme.containerLine};
@@ -47,7 +47,7 @@ const ProfillImg = styled.img`
 
   cursor: pointer;
 `;
-const ProfillId = styled.div`
+const ProfileId = styled.div`
   padding: 0 2px;
   font-size: 12px;
 
@@ -234,50 +234,57 @@ export default function Home() {
           <PrevBtn />
           <StoryItems>
             <StroyItem>
-              <ProfillImg />
-              <ProfillId>ㅎㅎㅎ</ProfillId>
+              <ProfileImg />
+              <ProfileId>ㅎㅎㅎ</ProfileId>
             </StroyItem>
             <StroyItem>
-              <ProfillImg />
-              <ProfillId>ㅎㅎㅎ</ProfillId>
+              <ProfileImg />
+              <ProfileId>ㅎㅎㅎ</ProfileId>
             </StroyItem>
             <StroyItem>
-              <ProfillImg />
-              <ProfillId>ㅎㅎㅎ</ProfillId>
+              <ProfileImg />
+              <ProfileId>ㅎㅎㅎ</ProfileId>
             </StroyItem>
             <StroyItem>
-              <ProfillImg />
-              <ProfillId>ㅎㅎㅎ</ProfillId>
+              <ProfileImg />
+              <ProfileId>ㅎㅎㅎ</ProfileId>
             </StroyItem>
             <StroyItem>
-              <ProfillImg />
-              <ProfillId>ㅎㅎㅎ</ProfillId>
+              <ProfileImg />
+              <ProfileId>ㅎㅎㅎ</ProfileId>
             </StroyItem>
             <StroyItem>
-              <ProfillImg />
-              <ProfillId>ㅎㅎㅎ</ProfillId>
+              <ProfileImg />
+              <ProfileId>ㅎㅎㅎ</ProfileId>
             </StroyItem>
             <StroyItem>
-              <ProfillImg />
-              <ProfillId>ㅎㅎㅎ</ProfillId>
+              <ProfileImg />
+              <ProfileId>ㅎㅎㅎ</ProfileId>
             </StroyItem>
             <StroyItem>
-              <ProfillImg />
-              <ProfillId>ㅎㅎㅎ</ProfillId>
+              <ProfileImg />
+              <ProfileId>ㅎㅎㅎ</ProfileId>
             </StroyItem>
             <StroyItem>
-              <ProfillImg />
-              <ProfillId>ㅎㅎㅎ</ProfillId>
+              <ProfileImg />
+              <ProfileId>ㅎㅎㅎ</ProfileId>
             </StroyItem>
           </StoryItems>
         </StoryBox>
         <FeedBox>
           <FeedHeader>
             <FeedTitle>
-              <ProfillImg style={{ width: "32px", height: "32px" }} />
-              <ProfillId style={{ marginLeft: "10px", fontWeight: 600 }}>
-                {user?.id}
-              </ProfillId>
+              <Link to={`/${user?.id}`}>
+                <ProfileImg
+                  src={user?.profileImage}
+                  style={{ width: "32px", height: "32px" }}
+                />
+              </Link>
+              <Link to={`/${user?.id}`}>
+                <ProfileId style={{ marginLeft: "10px", fontWeight: 600 }}>
+                  {user?.id}
+                </ProfileId>
+              </Link>
             </FeedTitle>
             <SvgBtn onClick={() => setOnTabClicked(true)}>
               <Svg

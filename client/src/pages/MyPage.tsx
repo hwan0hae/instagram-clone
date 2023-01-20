@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { AnimatePresence } from "framer-motion";
 import { Link, Outlet, useMatch } from "react-router-dom";
@@ -6,6 +6,8 @@ import { SvgBtn, Overlay, TabItems, Svg } from "./Home";
 import { useRecoilValue } from "recoil";
 import { userAtom } from "../utills/atoms";
 import { Helmet } from "react-helmet-async";
+import axios from "axios";
+import { useQueryClient } from "react-query";
 
 const Wrapper = styled.div`
   width: clac(100%-72px);
@@ -24,41 +26,42 @@ const Container = styled.div`
   width: 100%;
   max-width: 935px;
 `;
-const Profill = styled.div`
+const Profile = styled.div`
   margin-bottom: 44px;
   width: 100%;
   display: flex;
   flex-direction: row;
 `;
-const ProfillImgContainer = styled.div`
+const ProfileImgContainer = styled.div`
   width: 33%;
   padding: 16px 32px;
 
   margin-right: 30px;
 `;
-const ProfillImg = styled.img`
+const ProfileImg = styled.img`
   width: 150px;
   height: 150px;
-  background-color: gray;
   border-radius: 50%;
   border: 1px solid ${(props) => props.theme.borderLine};
+
+  cursor: pointer;
 `;
-const ProfillInfo = styled.div`
+const ProfileInfo = styled.div`
   width: 100%;
 `;
-const ProfillHeader = styled.div`
+const ProfileHeader = styled.div`
   display: flex;
   flex-direction: row;
   padding: 3px 0;
   align-items: center;
   gap: 10px;
 `;
-const ProfillId = styled.h2`
+const ProfileId = styled.h2`
   font-size: 28px;
   color: ${(props) => props.theme.textColor};
   margin-right: 10px;
 `;
-const ProfillBtn = styled.button`
+const ProfileBtn = styled.button`
   background-color: #fafafa;
   color: black;
   height: 32px;
@@ -162,7 +165,7 @@ const NavItem = styled.div<{ clicked: boolean }>`
     props.clicked ? props.theme.textColor : props.theme.textLightColor};
 
   svg {
-    fill: ${(props) =>
+    file: ${(props) =>
       props.clicked ? props.theme.textColor : props.theme.textLightColor};
   }
 
@@ -175,13 +178,18 @@ const NavItem = styled.div<{ clicked: boolean }>`
     filter: brightness(0.8);
   }
 `;
+
+const FILE_SIZE_MAX_LIMIT = 5 * 1024 * 1024; // 5MB
+
 export default function MyPage() {
+  const queryClient = useQueryClient();
   const homeMatch = useMatch("/:id");
   const reelsMatch = useMatch("/:id/reels");
   const savedMatch = useMatch("/:id/saved");
   const taggedMatch = useMatch("/:id/tagged");
   const TabItemsRef = useRef<HTMLDivElement>(null);
-  const [onProfillImgClicked, setOnProfillImgClicked] = useState(false);
+  const imgInput = useRef<HTMLInputElement>(null);
+  const [onProfileImgClicked, setOnProfileImgClicked] = useState(false);
   const user = useRecoilValue(userAtom);
 
   useEffect(() => {
@@ -190,13 +198,50 @@ export default function MyPage() {
         TabItemsRef.current &&
         !TabItemsRef.current.contains(e.target as Node)
       ) {
-        console.log(!TabItemsRef.current.contains);
-        setOnProfillImgClicked(false);
+        setOnProfileImgClicked(false);
       }
     };
+
     window.addEventListener("mousedown", handleClick);
     return () => window.removeEventListener("mousedown", handleClick);
   }, [TabItemsRef]);
+
+  const onImgChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const target = e.currentTarget;
+    const files = (target.files as FileList)[0];
+    if (files === undefined) {
+      //업로드 취소할 시
+
+      return;
+    }
+    // 파일 용량 체크
+    if (files.size > FILE_SIZE_MAX_LIMIT) {
+      target.value = "";
+      alert("업로드 가능한 최대 용량은 5MB입니다. ");
+      return;
+    }
+    const formData = new FormData();
+    formData.append("file", files);
+
+    const config = {
+      headers: { "content-type": "multipart/form-data" },
+    };
+    const response = await axios.post(
+      "/api/users/profileupload",
+      formData,
+      config
+    );
+
+    if (response.data.success) {
+      //작업 성공시 로직
+      //저장된위치를 받아서 넣어줘야함
+      queryClient.invalidateQueries("LoginSuccess");
+      console.log("성공");
+    } else {
+      console.log(response.data);
+      // alert("파일을 저장하는데 실패했습니다.");
+    }
+  };
 
   return (
     <Wrapper>
@@ -207,23 +252,26 @@ export default function MyPage() {
         {/* meta태그 SEO 검색엔진 */}
       </Helmet>
       <Container>
-        <Profill>
-          <ProfillImgContainer>
-            <ProfillImg onClick={() => setOnProfillImgClicked(true)} />
-          </ProfillImgContainer>
-          <ProfillInfo>
-            <ProfillHeader>
-              <ProfillId> {user?.id}</ProfillId>
-              <ProfillBtn>프로필 편집</ProfillBtn>
-              <ProfillBtn>광고 도구</ProfillBtn>
+        <Profile>
+          <ProfileImgContainer>
+            <ProfileImg
+              onClick={() => setOnProfileImgClicked(true)}
+              src={user?.profileImage}
+            />
+          </ProfileImgContainer>
+          <ProfileInfo>
+            <ProfileHeader>
+              <ProfileId> {user?.id}</ProfileId>
+              <ProfileBtn>프로필 편집</ProfileBtn>
+              <ProfileBtn>광고 도구</ProfileBtn>
               <SvgBtn style={{ backgroundColor: "transparent" }}>
                 <Svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                   <path d="M495.9 166.6c3.2 8.7 .5 18.4-6.4 24.6l-43.3 39.4c1.1 8.3 1.7 16.8 1.7 25.4s-.6 17.1-1.7 25.4l43.3 39.4c6.9 6.2 9.6 15.9 6.4 24.6c-4.4 11.9-9.7 23.3-15.8 34.3l-4.7 8.1c-6.6 11-14 21.4-22.1 31.2c-5.9 7.2-15.7 9.6-24.5 6.8l-55.7-17.7c-13.4 10.3-28.2 18.9-44 25.4l-12.5 57.1c-2 9.1-9 16.3-18.2 17.8c-13.8 2.3-28 3.5-42.5 3.5s-28.7-1.2-42.5-3.5c-9.2-1.5-16.2-8.7-18.2-17.8l-12.5-57.1c-15.8-6.5-30.6-15.1-44-25.4L83.1 425.9c-8.8 2.8-18.6 .3-24.5-6.8c-8.1-9.8-15.5-20.2-22.1-31.2l-4.7-8.1c-6.1-11-11.4-22.4-15.8-34.3c-3.2-8.7-.5-18.4 6.4-24.6l43.3-39.4C64.6 273.1 64 264.6 64 256s.6-17.1 1.7-25.4L22.4 191.2c-6.9-6.2-9.6-15.9-6.4-24.6c4.4-11.9 9.7-23.3 15.8-34.3l4.7-8.1c6.6-11 14-21.4 22.1-31.2c5.9-7.2 15.7-9.6 24.5-6.8l55.7 17.7c13.4-10.3 28.2-18.9 44-25.4l12.5-57.1c2-9.1 9-16.3 18.2-17.8C227.3 1.2 241.5 0 256 0s28.7 1.2 42.5 3.5c9.2 1.5 16.2 8.7 18.2 17.8l12.5 57.1c15.8 6.5 30.6 15.1 44 25.4l55.7-17.7c8.8-2.8 18.6-.3 24.5 6.8c8.1 9.8 15.5 20.2 22.1 31.2l4.7 8.1c6.1 11 11.4 22.4 15.8 34.3zM256 336c44.2 0 80-35.8 80-80s-35.8-80-80-80s-80 35.8-80 80s35.8 80 80 80z" />
                 </Svg>
               </SvgBtn>
-            </ProfillHeader>
-          </ProfillInfo>
-        </Profill>
+            </ProfileHeader>
+          </ProfileInfo>
+        </Profile>
         <StoryContainer>
           <Strotys>
             <Story>
@@ -246,7 +294,7 @@ export default function MyPage() {
           </Strotys>
         </StoryContainer>
         <FeedNav>
-          <Link to={"/:id"}>
+          <Link to={`/${user?.id}`}>
             <NavItem clicked={Boolean(homeMatch)}>
               <Svg
                 style={{ scale: "0.6" }}
@@ -258,7 +306,7 @@ export default function MyPage() {
               <span>게시물</span>
             </NavItem>
           </Link>
-          <Link to={"/:id/reels"}>
+          <Link to={`/${user?.id}/reels`}>
             <NavItem clicked={Boolean(reelsMatch)}>
               <Svg
                 style={{ scale: "0.7" }}
@@ -270,7 +318,7 @@ export default function MyPage() {
               <span>릴스</span>
             </NavItem>
           </Link>
-          <Link to={"/:id/saved"}>
+          <Link to={`/${user?.id}/saved`}>
             <NavItem clicked={Boolean(savedMatch)}>
               <Svg
                 style={{ scale: "0.6" }}
@@ -282,7 +330,7 @@ export default function MyPage() {
               <span>저장됨</span>
             </NavItem>
           </Link>
-          <Link to={"/:id/tagged"}>
+          <Link to={`/${user?.id}/tagged`}>
             <NavItem clicked={Boolean(taggedMatch)}>
               <Svg
                 style={{ scale: "0.7" }}
@@ -297,7 +345,7 @@ export default function MyPage() {
         </FeedNav>
         <Outlet />
         <AnimatePresence>
-          {onProfillImgClicked && (
+          {onProfileImgClicked && (
             <Overlay animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               <TabItems
                 ref={TabItemsRef}
@@ -305,15 +353,29 @@ export default function MyPage() {
                 animate={{ scale: 1 }}
               >
                 <TabItem>프로필 사진 바꾸기</TabItem>
-                <TabItem>사진 업로드</TabItem>
+                <TabItem
+                  onClick={() => {
+                    imgInput.current?.click();
+                  }}
+                >
+                  사진 업로드
+                </TabItem>
                 <TabItem>현재 사진 삭제</TabItem>
-                <TabItem onClick={() => setOnProfillImgClicked(false)}>
+                <TabItem onClick={() => setOnProfileImgClicked(false)}>
                   취소
                 </TabItem>
               </TabItems>
             </Overlay>
           )}
         </AnimatePresence>
+        <input
+          type="file"
+          style={{ display: "none" }}
+          accept="image/*"
+          className="ImgInput"
+          onChange={onImgChange}
+          ref={imgInput}
+        />
       </Container>
     </Wrapper>
   );

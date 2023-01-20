@@ -1,5 +1,9 @@
 import { useEffect } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { useQuery } from "react-query";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { isLoginAtom, userAtom } from "../utills/atoms";
+import { loginSuccess } from "../utills/api";
 
 import Header from "../components/layout/Header";
 import Login from "../components/Login";
@@ -10,14 +14,12 @@ import MyPageReels from "./MyPageReels";
 import MyPageSaved from "./MyPageSaved";
 import MyPageTagged from "./MyPageTagged";
 import Register from "./Register";
-import { useQuery } from "react-query";
-import { loginSuccess } from "../utills/api";
-import { useRecoilState, useSetRecoilState } from "recoil";
-import { isLoginAtom, userAtom } from "../utills/atoms";
+import Edit from "./Edit";
+
 export default function Router() {
   const [isLogin, setIsLogin] = useRecoilState<boolean>(isLoginAtom);
-
   const setUser = useSetRecoilState(userAtom);
+
   const loginUser = useQuery("LoginSuccess", loginSuccess);
 
   useEffect(() => {
@@ -44,6 +46,7 @@ export default function Router() {
               <Route path="/:id/saved" element={<MyPageSaved />} />
               <Route path="/:id/tagged" element={<MyPageTagged />} />
             </Route>
+            <Route path="/edit" element={<Edit />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </>

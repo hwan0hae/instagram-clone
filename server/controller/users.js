@@ -1,5 +1,6 @@
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
+import fs from "fs";
 
 export const register = (req, res) => {
   //회원 가입 할때 필요한 정보들을 client에서 가져오면
@@ -182,5 +183,39 @@ export const logout = (req, res) => {
     res.status(200).json("Logout Success");
   } catch (error) {
     res.status(500).json(error);
+  }
+};
+
+/** 프로필사진 변경 */
+export const profileUpload = (req, res, next) => {
+  try {
+    //프로필 사진 저장 경로
+    const { path } = req.file;
+    const token = req.cookies.accessToken;
+    const { _id } = jwt.verify(token, process.env.ACCESS_SECRET);
+
+    User.findOne({ _id }, (err, user) => {
+      if (err) throw err;
+
+      const prvProfileImgPath = user.profileImage;
+
+      User.findOneAndUpdate({ _id }, { profileImage: path }, (err, data) => {
+        if (err) throw err;
+
+        //교체한 파일 경로에 파일이 존재한다면 파일 삭제
+        if (fs.existsSync(prvProfileImgPath)) {
+          try {
+            fs.unlinkSync(prvProfileImgPath);
+          } catch (err) {
+            console.log(err);
+          }
+        }
+        //파일이 저장된 위치를 보내줘야함
+        const url = `http://localhost:${process.env.PORT}/${path}`;
+        res.status(200).json({ success: true, imgUrl: url });
+      });
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 };
