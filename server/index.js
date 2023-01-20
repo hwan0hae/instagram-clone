@@ -12,6 +12,7 @@ import {
   refreshToken,
   logout,
   profileUpload,
+  profileDelete,
 } from "./controller/users.js";
 
 const app = express();
@@ -56,6 +57,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage }).single("file");
 
 app.post("/api/users/profileupload", upload, profileUpload);
+app.get("/api/users/profiledelete", profileDelete);
 
 const port = process.env.PORT;
 

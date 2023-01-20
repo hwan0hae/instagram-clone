@@ -210,8 +210,6 @@ export default function MyPage() {
     const target = e.currentTarget;
     const files = (target.files as FileList)[0];
     if (files === undefined) {
-      //업로드 취소할 시
-
       return;
     }
     // 파일 용량 체크
@@ -220,6 +218,7 @@ export default function MyPage() {
       alert("업로드 가능한 최대 용량은 5MB입니다. ");
       return;
     }
+
     const formData = new FormData();
     formData.append("file", files);
 
@@ -234,15 +233,22 @@ export default function MyPage() {
 
     if (response.data.success) {
       //작업 성공시 로직
-      //저장된위치를 받아서 넣어줘야함
+
+      setOnProfileImgClicked(false);
       queryClient.invalidateQueries("LoginSuccess");
-      console.log("성공");
     } else {
-      console.log(response.data);
-      // alert("파일을 저장하는데 실패했습니다.");
+      console.log(response.data.message);
     }
   };
-
+  const onImageDelete = async () => {
+    const response = await axios.get("/api/users/profiledelete");
+    if (response.data.success) {
+      setOnProfileImgClicked(false);
+      queryClient.invalidateQueries("LoginSuccess");
+    } else {
+      console.log(response.data.message);
+    }
+  };
   return (
     <Wrapper>
       <Helmet>
@@ -360,7 +366,7 @@ export default function MyPage() {
                 >
                   사진 업로드
                 </TabItem>
-                <TabItem>현재 사진 삭제</TabItem>
+                <TabItem onClick={onImageDelete}>현재 사진 삭제</TabItem>
                 <TabItem onClick={() => setOnProfileImgClicked(false)}>
                   취소
                 </TabItem>

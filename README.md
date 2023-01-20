@@ -89,12 +89,16 @@ Sever
 - 프로필 사진 변경 시 사진 서버에 저장 후 경로 db에 저장 전에 있던 프로필 사진은 삭제처리
 - 정적파일 불러오기 express.static (웹 경로 img 띄우기)
 - 렌더링 loginSuccess 마다 login User 정보 프로필 사진 경로도 가져와서 뿌려줌
+- 현재 사진 삭제 기능
+- 사진 변경 or 삭제시 overlay close
 
 -- 해야 할 일 --
 
+// 프로필 변경 기능 과 edit 등
+
 // 라우터 \* >> url검색및 새로고침시 다 default 로 보내버리는 이슈
 // 코드 try catch 등 정리
-게시물
+//게시물
 
 # 깃허브 정리
 

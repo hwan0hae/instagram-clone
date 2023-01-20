@@ -198,8 +198,9 @@ export const profileUpload = (req, res, next) => {
       if (err) throw err;
 
       const prvProfileImgPath = user.profileImage;
+      const url = `http://localhost:${process.env.PORT}/${path}`;
 
-      User.findOneAndUpdate({ _id }, { profileImage: path }, (err, data) => {
+      User.findOneAndUpdate({ _id }, { profileImage: url }, (err, data) => {
         if (err) throw err;
 
         //교체한 파일 경로에 파일이 존재한다면 파일 삭제
@@ -210,10 +211,45 @@ export const profileUpload = (req, res, next) => {
             console.log(err);
           }
         }
-        //파일이 저장된 위치를 보내줘야함
-        const url = `http://localhost:${process.env.PORT}/${path}`;
-        res.status(200).json({ success: true, imgUrl: url });
+        res.status(200).json({ success: true });
       });
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export const profileDelete = (req, res) => {
+  try {
+    const token = req.cookies.accessToken;
+    const { _id } = jwt.verify(token, process.env.ACCESS_SECRET);
+
+    User.findOne({ _id }, (err, user) => {
+      if (err) throw err;
+
+      const prvProfileImgPath = user.profileImage;
+
+      User.findOneAndUpdate(
+        { _id },
+        {
+          profileImage:
+            "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+        },
+        (err, data) => {
+          if (err) throw err;
+
+          //교체한 파일 경로에 파일이 존재한다면 파일 삭제
+          if (fs.existsSync(prvProfileImgPath)) {
+            try {
+              fs.unlinkSync(prvProfileImgPath);
+            } catch (err) {
+              console.log(err);
+            }
+          }
+
+          res.status(200).json({ success: true });
+        }
+      );
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
