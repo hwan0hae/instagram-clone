@@ -68,6 +68,9 @@ a {
 div {
   text-decoration: none solid rgb(38,38,38);
 }
+span{
+  /* color:${(props) => props.theme.textColor} */
+}
 input{
   :focus {outline:0.5px solid ${(props) => props.theme.textColor}}
 }

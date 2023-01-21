@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { useMutation } from "react-query";
 import { IModify, modify } from "../utills/api";
 import ImgUpload from "../components/layout/ImgUpload";
+import { kMaxLength } from "buffer";
 
 const Container = styled.div`
   margin-top: 30px;
@@ -89,6 +90,14 @@ const ContentText = styled.div`
   color: ${(props) => props.theme.textLightColor};
   font-weight: 400;
 `;
+const TextArea = styled.textarea`
+  padding: 6px 10px;
+  color: ${(props) => props.theme.textColor};
+  border: 1px solid #555555;
+  background-color: transparent;
+  border-radius: 3px;
+  height: 60px;
+`;
 const FormSubmitBox = styled.div`
   display: flex;
   justify-content: center;
@@ -110,6 +119,7 @@ const FormSubmitBtn = styled.button`
 interface IForm {
   name: string;
   id: string;
+  introduction: string;
 }
 
 function Edit() {
@@ -122,6 +132,7 @@ function Edit() {
       .required("아이디를 입력해주세요")
       .min(5, "최소 5자 이상 가능합니다")
       .max(20, "최대 20자 까지만 가능합니다"),
+    introduction: yup.string().max(100, "최대 100자 까지만 가능합니다"),
   });
   const {
     register,
@@ -132,7 +143,11 @@ function Edit() {
     mode: "onSubmit",
     reValidateMode: "onChange",
     resolver: yupResolver(formSchema),
-    defaultValues: { name: user?.name, id: user?.id },
+    defaultValues: {
+      name: user?.name,
+      id: user?.id,
+      introduction: user?.introduction,
+    },
   });
   const [registerRequestData, setRegisterRequestData] = useState<String>("");
   const setOnProfileImgClicked = useSetRecoilState<boolean>(
@@ -169,6 +184,7 @@ function Edit() {
     const info = {
       name: data.name,
       id: data.id,
+      introduction: data.introduction,
     };
     modifyMutation.mutate(info);
   };
@@ -221,6 +237,22 @@ function Edit() {
               </ContentText>
             </ContentBox>
           </SubBox>
+          <SubBox>
+            <SubTitleBox>
+              <SubTitle>소개</SubTitle>
+            </SubTitleBox>
+            {errors.introduction && (
+              <ErrorText>{errors.introduction.message}</ErrorText>
+            )}
+            <ContentBox>
+              <TextArea
+                {...register("introduction")}
+                placeholder="자기 소개"
+                maxLength={100}
+              />
+            </ContentBox>
+          </SubBox>
+
           {modifyMutation.isSuccess && (
             <div>
               <ErrorText style={{ textAlign: "center" }}>

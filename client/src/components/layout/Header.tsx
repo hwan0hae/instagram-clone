@@ -232,6 +232,7 @@ export default function Header() {
   const user = useRecoilValue(userAtom);
   const homeMatch = useMatch("/");
   const myPageMatch = useMatch(`/${user?.id}`);
+  const myPageMatch2 = useMatch(`/${user?.id}/:a`);
   const queryClient = useQueryClient();
   const tabMenuRef = useRef<HTMLDivElement>(null);
   const tabRef = useRef<HTMLDivElement>(null);
@@ -386,7 +387,7 @@ export default function Header() {
               <NavMenuTip>프로필</NavMenuTip>
               <ProfileImg
                 src={user?.profileImage}
-                clicked={Boolean(myPageMatch)}
+                clicked={Boolean(myPageMatch || myPageMatch2)}
               />
 
               <NavMenuName>프로필</NavMenuName>

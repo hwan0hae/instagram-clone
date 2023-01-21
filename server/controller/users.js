@@ -259,9 +259,9 @@ export const profileModification = (req, res) => {
   try {
     const token = req.cookies.accessToken;
     const { _id } = jwt.verify(token, process.env.ACCESS_SECRET);
-    const { name, id } = req.body;
+    const { name, id, introduction } = req.body;
 
-    User.findOneAndUpdate({ _id }, { name, id }, (err, data) => {
+    User.findOneAndUpdate({ _id }, { name, id, introduction }, (err, data) => {
       if (err) {
         if (err.name === "MongoServerError" && err.code === 11000) {
           //id 중복(unique)
@@ -280,3 +280,5 @@ export const profileModification = (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+//입력하면 저장  user 내려주고 뿌려주고

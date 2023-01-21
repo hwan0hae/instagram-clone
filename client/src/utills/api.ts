@@ -49,6 +49,7 @@ export async function logout() {
 export interface IModify {
   name: string;
   id: string;
+  introduction: string;
 }
 export async function modify(info: IModify) {
   const request = await axios.post("/api/users/profilemodification", info);

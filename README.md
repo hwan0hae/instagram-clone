@@ -96,7 +96,7 @@ Sever
 
 Client
 
-- Edit page 구현
+- Edit Page 구현
 - profileUpload 컴포넌트화
 
 Sever

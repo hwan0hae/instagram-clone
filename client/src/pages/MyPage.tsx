@@ -46,6 +46,7 @@ const ProfileImg = styled.img`
 const ProfileInfo = styled.div`
   width: 100%;
 `;
+
 const ProfileHeader = styled.div`
   display: flex;
   flex-direction: row;
@@ -54,7 +55,8 @@ const ProfileHeader = styled.div`
   gap: 10px;
 `;
 const ProfileId = styled.h2`
-  font-size: 28px;
+  font-size: 1.25rem;
+  font-weight: 400;
   color: ${(props) => props.theme.textColor};
   margin-right: 10px;
 `;
@@ -73,37 +75,24 @@ const ProfileBtn = styled.button`
     filter: brightness(0.8);
   }
 `;
-const TabItem = styled.div`
-  text-align: center;
-  padding: 16px 0;
-  font-weight: 400;
-
-  cursor: pointer;
-
-  :first-child {
-    font-size: 18px;
-    padding: 32px 0;
-    border-radius: 15px 15px 0 0;
-    font-weight: 600;
-    cursor: default;
-  }
-  :last-child {
-    border-radius: 0 0 15px 15px;
-  }
-  &:not(:first-child) {
-    border-top: 1px solid ${(props) => props.theme.borderLine};
-    :hover {
-      background-color: ${(props) => props.theme.bgColor};
-    }
-  }
-  :nth-child(2) {
-    color: ${(props) => props.theme.blue.darkBlue};
-    font-weight: 700;
-  }
-  :nth-child(3) {
-    color: ${(props) => props.theme.red};
-    font-weight: 700;
-  }
+const ProfileContent = styled.div`
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  color: ${(props) => props.theme.textColor};
+`;
+const ProfileName = styled.span`
+  font-weight: 600;
+`;
+const ProfileIntroduction = styled.textarea`
+  font-weight: 600;
+  background-color: transparent;
+  border: none;
+  font-size: 14px;
+  padding: 0;
+  height: 120px;
+  resize: none;
+  color: ${(props) => props.theme.textColor};
 `;
 const StoryContainer = styled.div`
   padding: 0 16px;
@@ -214,6 +203,12 @@ export default function MyPage() {
                 </Svg>
               </SvgBtn>
             </ProfileHeader>
+            <ProfileContent>
+              <ProfileName>{user?.name}</ProfileName>
+              <ProfileIntroduction disabled>
+                {user?.introduction}
+              </ProfileIntroduction>
+            </ProfileContent>
           </ProfileInfo>
         </Profile>
         <StoryContainer>
