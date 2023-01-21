@@ -13,6 +13,7 @@ import {
   logout,
   profileUpload,
   profileDelete,
+  profileModification,
 } from "./controller/users.js";
 
 const app = express();
@@ -58,7 +59,7 @@ const upload = multer({ storage: storage }).single("file");
 
 app.post("/api/users/profileupload", upload, profileUpload);
 app.get("/api/users/profiledelete", profileDelete);
-
+app.post("/api/users/profilemodification", profileModification);
 const port = process.env.PORT;
 
 app.listen(port, () => {

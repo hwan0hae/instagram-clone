@@ -1,13 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { AnimatePresence } from "framer-motion";
 import { Link, Outlet, useMatch } from "react-router-dom";
-import { SvgBtn, Overlay, TabItems, Svg } from "./Home";
-import { useRecoilValue } from "recoil";
-import { userAtom } from "../utills/atoms";
+import { SvgBtn, Svg } from "./Home";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { onProfileImgClickedAtom, userAtom } from "../utills/atoms";
 import { Helmet } from "react-helmet-async";
-import axios from "axios";
-import { useQueryClient } from "react-query";
+import ImgUpload from "../components/layout/ImgUpload";
 
 const Wrapper = styled.div`
   width: clac(100%-72px);
@@ -179,76 +176,15 @@ const NavItem = styled.div<{ clicked: boolean }>`
   }
 `;
 
-const FILE_SIZE_MAX_LIMIT = 5 * 1024 * 1024; // 5MB
-
 export default function MyPage() {
-  const queryClient = useQueryClient();
   const homeMatch = useMatch("/:id");
   const reelsMatch = useMatch("/:id/reels");
   const savedMatch = useMatch("/:id/saved");
   const taggedMatch = useMatch("/:id/tagged");
-  const TabItemsRef = useRef<HTMLDivElement>(null);
-  const imgInput = useRef<HTMLInputElement>(null);
-  const [onProfileImgClicked, setOnProfileImgClicked] = useState(false);
   const user = useRecoilValue(userAtom);
-
-  useEffect(() => {
-    const handleClick = (e: MouseEvent) => {
-      if (
-        TabItemsRef.current &&
-        !TabItemsRef.current.contains(e.target as Node)
-      ) {
-        setOnProfileImgClicked(false);
-      }
-    };
-
-    window.addEventListener("mousedown", handleClick);
-    return () => window.removeEventListener("mousedown", handleClick);
-  }, [TabItemsRef]);
-
-  const onImgChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const target = e.currentTarget;
-    const files = (target.files as FileList)[0];
-    if (files === undefined) {
-      return;
-    }
-    // 파일 용량 체크
-    if (files.size > FILE_SIZE_MAX_LIMIT) {
-      target.value = "";
-      alert("업로드 가능한 최대 용량은 5MB입니다. ");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("file", files);
-
-    const config = {
-      headers: { "content-type": "multipart/form-data" },
-    };
-    const response = await axios.post(
-      "/api/users/profileupload",
-      formData,
-      config
-    );
-
-    if (response.data.success) {
-      //작업 성공시 로직
-
-      setOnProfileImgClicked(false);
-      queryClient.invalidateQueries("LoginSuccess");
-    } else {
-      console.log(response.data.message);
-    }
-  };
-  const onImageDelete = async () => {
-    const response = await axios.get("/api/users/profiledelete");
-    if (response.data.success) {
-      setOnProfileImgClicked(false);
-      queryClient.invalidateQueries("LoginSuccess");
-    } else {
-      console.log(response.data.message);
-    }
-  };
+  const setOnProfileImgClicked = useSetRecoilState<boolean>(
+    onProfileImgClickedAtom
+  );
   return (
     <Wrapper>
       <Helmet>
@@ -261,14 +197,16 @@ export default function MyPage() {
         <Profile>
           <ProfileImgContainer>
             <ProfileImg
-              onClick={() => setOnProfileImgClicked(true)}
               src={user?.profileImage}
+              onClick={() => setOnProfileImgClicked(true)}
             />
           </ProfileImgContainer>
           <ProfileInfo>
             <ProfileHeader>
               <ProfileId> {user?.id}</ProfileId>
-              <ProfileBtn>프로필 편집</ProfileBtn>
+              <Link to="/edit">
+                <ProfileBtn>프로필 편집</ProfileBtn>
+              </Link>
               <ProfileBtn>광고 도구</ProfileBtn>
               <SvgBtn style={{ backgroundColor: "transparent" }}>
                 <Svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
@@ -350,39 +288,8 @@ export default function MyPage() {
           </Link>
         </FeedNav>
         <Outlet />
-        <AnimatePresence>
-          {onProfileImgClicked && (
-            <Overlay animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-              <TabItems
-                ref={TabItemsRef}
-                initial={{ scale: 1.2 }}
-                animate={{ scale: 1 }}
-              >
-                <TabItem>프로필 사진 바꾸기</TabItem>
-                <TabItem
-                  onClick={() => {
-                    imgInput.current?.click();
-                  }}
-                >
-                  사진 업로드
-                </TabItem>
-                <TabItem onClick={onImageDelete}>현재 사진 삭제</TabItem>
-                <TabItem onClick={() => setOnProfileImgClicked(false)}>
-                  취소
-                </TabItem>
-              </TabItems>
-            </Overlay>
-          )}
-        </AnimatePresence>
-        <input
-          type="file"
-          style={{ display: "none" }}
-          accept="image/*"
-          className="ImgInput"
-          onChange={onImgChange}
-          ref={imgInput}
-        />
       </Container>
+      <ImgUpload />
     </Wrapper>
   );
 }

@@ -254,3 +254,29 @@ export const profileDelete = (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+export const profileModification = (req, res) => {
+  try {
+    const token = req.cookies.accessToken;
+    const { _id } = jwt.verify(token, process.env.ACCESS_SECRET);
+    const { name, id } = req.body;
+
+    User.findOneAndUpdate({ _id }, { name, id }, (err, data) => {
+      if (err) {
+        if (err.name === "MongoServerError" && err.code === 11000) {
+          //id 중복(unique)
+          return res.json({
+            success: false,
+            message: "해당 ID가 이미 존재합니다. 다른 ID를 입력해주세요.",
+          });
+        }
+      }
+
+      return res
+        .status(200)
+        .json({ success: true, message: "프로필이 수정되었습니다." });
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};

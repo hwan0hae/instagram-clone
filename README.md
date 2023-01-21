@@ -94,10 +94,22 @@ Sever
 
 # 1월 20일 토요일
 
+Client
+
+- Edit page 구현
+- profileUpload 컴포넌트화
+
+Sever
+
+- 프로필 사진 변경 코드 개선 및 오류 수정 (절대 경로 DB저장 변경 후 서버 사진 삭제 안되는 버그 수정)
+- profile modify 기능 구현
+
 -- 해야 할 일 --
 // 라우터 \* >> url검색및 새로고침시 다 default 로 보내버리는 이슈
 // edit 기능
+
 //게시물
+//팔로우 기능
 
 // 코드 try catch 등 정리
 

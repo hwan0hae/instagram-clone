@@ -24,3 +24,8 @@ export const userAtom = atom<IUser | null>({
   key: "user",
   default: null,
 });
+
+export const onProfileImgClickedAtom = atom<boolean>({
+  key: "profileImgClicked",
+  default: false,
+});

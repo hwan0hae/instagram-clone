@@ -45,3 +45,12 @@ export async function logout() {
 
   return request.data;
 }
+
+export interface IModify {
+  name: string;
+  id: string;
+}
+export async function modify(info: IModify) {
+  const request = await axios.post("/api/users/profilemodification", info);
+  return request.data;
+}
