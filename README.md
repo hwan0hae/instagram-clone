@@ -80,7 +80,7 @@ Sever
 
 Client
 
-- 프로필 이미지 UI 적용
+- 프로필 이미지 UI 개선
 
 Sever
 
@@ -92,13 +92,14 @@ Sever
 - 현재 사진 삭제 기능
 - 사진 변경 or 삭제시 overlay close
 
+# 1월 20일 토요일
+
 -- 해야 할 일 --
-
-// 프로필 변경 기능 과 edit 등
-
 // 라우터 \* >> url검색및 새로고침시 다 default 로 보내버리는 이슈
-// 코드 try catch 등 정리
+// edit 기능
 //게시물
+
+// 코드 try catch 등 정리
 
 # 깃허브 정리
 

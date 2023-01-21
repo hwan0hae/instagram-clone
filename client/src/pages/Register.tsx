@@ -16,7 +16,7 @@ import {
   ErrorText,
   PasswordVisibleBtn,
   IPasswordType,
-} from "../components/Login";
+} from "./Login";
 import { useEffect, useState } from "react";
 import { useMutation } from "react-query";
 import { IRegistrtUser, registerUser } from "../utills/api";

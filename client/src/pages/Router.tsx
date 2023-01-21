@@ -6,7 +6,7 @@ import { isLoginAtom, userAtom } from "../utills/atoms";
 import { loginSuccess } from "../utills/api";
 
 import Header from "../components/layout/Header";
-import Login from "../components/Login";
+import Login from "./Login";
 import Home from "./Home";
 import MyPage from "./MyPage";
 import MyPageFeed from "./MyPageFeed";

@@ -253,7 +253,7 @@ export default function MyPage() {
     <Wrapper>
       <Helmet>
         <title>
-          {user?.name}(@{user?.id})
+          {user?.name}(@{user?.id})﹒Instagram
         </title>
         {/* meta태그 SEO 검색엔진 */}
       </Helmet>

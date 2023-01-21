@@ -194,25 +194,25 @@ export const profileUpload = (req, res, next) => {
     const token = req.cookies.accessToken;
     const { _id } = jwt.verify(token, process.env.ACCESS_SECRET);
 
-    User.findOne({ _id }, (err, user) => {
+    const url = `http://localhost:${process.env.PORT}/${path}`;
+
+    User.findOneAndUpdate({ _id }, { profileImage: url }, (err, data) => {
       if (err) throw err;
 
-      const prvProfileImgPath = user.profileImage;
-      const url = `http://localhost:${process.env.PORT}/${path}`;
+      const prvProfileImgPath = data.profileImage;
+      const serverPath = prvProfileImgPath.substring(
+        prvProfileImgPath.indexOf("server")
+      );
 
-      User.findOneAndUpdate({ _id }, { profileImage: url }, (err, data) => {
-        if (err) throw err;
-
-        //교체한 파일 경로에 파일이 존재한다면 파일 삭제
-        if (fs.existsSync(prvProfileImgPath)) {
-          try {
-            fs.unlinkSync(prvProfileImgPath);
-          } catch (err) {
-            console.log(err);
-          }
+      //교체한 파일 경로에 파일이 존재한다면 파일 삭제
+      if (fs.existsSync(serverPath)) {
+        try {
+          fs.unlinkSync(serverPath);
+        } catch (err) {
+          console.log(err);
         }
-        res.status(200).json({ success: true });
-      });
+      }
+      res.status(200).json({ success: true });
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -224,33 +224,32 @@ export const profileDelete = (req, res) => {
     const token = req.cookies.accessToken;
     const { _id } = jwt.verify(token, process.env.ACCESS_SECRET);
 
-    User.findOne({ _id }, (err, user) => {
-      if (err) throw err;
+    User.findOneAndUpdate(
+      { _id },
+      {
+        profileImage:
+          "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+      },
+      (err, data) => {
+        if (err) throw err;
 
-      const prvProfileImgPath = user.profileImage;
+        const prvProfileImgPath = data.profileImage;
+        const serverPath = prvProfileImgPath.substring(
+          prvProfileImgPath.indexOf("server")
+        );
 
-      User.findOneAndUpdate(
-        { _id },
-        {
-          profileImage:
-            "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
-        },
-        (err, data) => {
-          if (err) throw err;
-
-          //교체한 파일 경로에 파일이 존재한다면 파일 삭제
-          if (fs.existsSync(prvProfileImgPath)) {
-            try {
-              fs.unlinkSync(prvProfileImgPath);
-            } catch (err) {
-              console.log(err);
-            }
+        //교체한 파일 경로에 파일이 존재한다면 파일 삭제
+        if (fs.existsSync(serverPath)) {
+          try {
+            fs.unlinkSync(serverPath);
+          } catch (err) {
+            console.log(err);
           }
-
-          res.status(200).json({ success: true });
         }
-      );
-    });
+
+        res.status(200).json({ success: true });
+      }
+    );
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
