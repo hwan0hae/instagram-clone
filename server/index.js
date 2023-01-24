@@ -8,13 +8,13 @@ import {
   register,
   login,
   loginSuccess,
-  accessToken,
   refreshToken,
   logout,
   profileUpload,
   profileDelete,
   profileModification,
 } from "./controller/users.js";
+import { getFeed, getMyFeed, upload } from "./controller/feed.js";
 
 const app = express();
 dotenv.config();
@@ -34,18 +34,7 @@ mongoose
   .then(() => console.log("MongoDB Connect..."))
   .catch((err) => console.log(err));
 
-app.get("/", (req, res) => {
-  res.send("hello");
-});
-
-app.post("/api/users/register", register);
-app.post("/api/users/login", login);
-app.get("/api/users/login/success", loginSuccess);
-app.get("/api/users/accesstoken", accessToken);
-app.get("/api/users/refreshtoken", refreshToken);
-app.get("/api/users/logout", logout);
-
-const storage = multer.diskStorage({
+const profileStorage = multer.diskStorage({
   //목적지
   destination: function (req, file, cb) {
     cb(null, "server/uploads/profileImg");
@@ -55,13 +44,42 @@ const storage = multer.diskStorage({
   },
 });
 //upload middleware 함수  -single 한개의 파일
-const upload = multer({ storage: storage }).single("file");
+const profileUploadMiddleware = multer({ storage: profileStorage }).single(
+  "file"
+);
 
-app.post("/api/users/profileupload", upload, profileUpload);
+const feedStorage = multer.diskStorage({
+  //목적지
+  destination: function (req, file, cb) {
+    //폴더 없으면 생성
+    cb(null, "server/uploads/feedImg");
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + "-" + Date.now() + "-" + file.originalname);
+  },
+});
+//upload middleware 함수  -single 한개의 파일
+const feedUploadMiddleware = multer({ storage: feedStorage }).single("file");
+
+/** 회원정보  */
+app.post("/api/users/register", register);
+app.post("/api/users/login", login);
+app.get("/api/users/login/success", loginSuccess);
+app.get("/api/users/refreshtoken", refreshToken);
+app.get("/api/users/logout", logout);
+
+/** 프로필  */
+app.post("/api/users/profileupload", profileUploadMiddleware, profileUpload);
 app.get("/api/users/profiledelete", profileDelete);
 app.post("/api/users/profilemodification", profileModification);
-const port = process.env.PORT;
 
+/** 피드  */
+app.post("/api/feed/upload", feedUploadMiddleware, upload);
+
+app.get("/api/feed/myfeed", getMyFeed);
+app.get("/api/feed/feed", getFeed);
+
+const port = process.env.PORT;
 app.listen(port, () => {
   console.log(`http://localhost:${port} 실행`);
 });

@@ -8,9 +8,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { ErrorText } from "./Login";
 import { useEffect, useState } from "react";
 import { useMutation } from "react-query";
+import { Helmet } from "react-helmet-async";
 import { IModify, modify } from "../utills/api";
-import ImgUpload from "../components/layout/ImgUpload";
-import { kMaxLength } from "buffer";
+import ImgUpload from "../components/layout/ImgUpload/ImgUpload";
 
 const Container = styled.div`
   margin-top: 30px;
@@ -19,6 +19,11 @@ const Container = styled.div`
   width: 748px;
   height: 900px;
   background-color: ${(props) => props.theme.containerColor};
+
+  @media screen and (min-width: 1250px) {
+    width: calc(100%-244px);
+    margin-left: 244px;
+  }
 `;
 const ProfileBox = styled.div`
   display: flex;
@@ -191,6 +196,10 @@ function Edit() {
 
   return (
     <Wrapper>
+      <Helmet>
+        <title>프로필 편집﹒Instagram</title>
+        {/* meta태그 SEO 검색엔진 */}
+      </Helmet>
       <Container>
         <ProfileBox>
           <SubTitleBox>

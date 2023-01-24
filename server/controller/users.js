@@ -77,34 +77,8 @@ export const login = (req, res) => {
       } catch (error) {
         res.status(500).json(error);
       }
-      // user.generateToken((err, user) => {
-      //   if (err) return res.status(400).send(err);
-
-      //   //토큰을 저장한다. 어디에 ? 쿠키,로컬스토리지
-      //   res
-      //     .cookie("x_auth", user.token)
-      //     .status(200)
-      //     .json({ loginSuccess: true, userId: user._id });
-      // });
     });
   });
-};
-
-export const accessToken = (req, res) => {
-  try {
-    const token = req.cookies.accessToken;
-    //토큰을 decode 한다.
-
-    const data = jwt.verify(token, process.env.ACCESS_SECRET);
-
-    User.findOne({ _id: data._id }, (err, user) => {
-      if (err) throw err;
-      const { password, ...others } = user._doc;
-      res.status(200).json(others);
-    });
-  } catch (error) {
-    res.status(500).json(error);
-  }
 };
 
 export const refreshToken = (req, res) => {
@@ -280,5 +254,3 @@ export const profileModification = (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
-
-//입력하면 저장  user 내려주고 뿌려주고

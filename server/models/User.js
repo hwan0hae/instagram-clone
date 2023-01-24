@@ -6,7 +6,7 @@ const saltRounds = 10;
 const userSchema = mongoose.Schema({
   name: {
     type: String,
-    maxlengyth: 50,
+    maxlength: 50,
   },
   email: {
     type: String,
@@ -74,40 +74,6 @@ userSchema.methods.comparePassword = function (plainPassword, cb) {
     cb(null, isMatch);
   });
 };
-
-// };
-// userSchema.methods.generateToken = function (cb) {
-//   var user = this;
-//   // jsonwebtoken을 이용해서 token을 생성하기
-
-//   try{
-//   //access Token 발급
-
-//     const accessToken = jwt.sign(
-//       { _id: user._id, email: user.email, name: user.name },
-//       process.env.ACCESS_SECRET,
-//       { expiresIn: "1m", issuer: "About Tech" }
-//     );
-
-//     //refresh Token 발급
-//     const refreshToken = jwt.sign(
-//       { _id: user._id, email: user.email, name: user.name },
-//       process.env.REFRESH_SECRET,
-//       { expiresIn: "24h", issuer: "About Tech" }
-//     );
-
-//     //
-
-//   }catch(error){
-
-//   }
-
-// user.token = token;
-// user.save(function (err, user) {
-//   if (err) return cb(err);
-//   cb(null, user);
-// });
-// };
 
 userSchema.statics.findByToken = function (token, cb) {
   var user = this;

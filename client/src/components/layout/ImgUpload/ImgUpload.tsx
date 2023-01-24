@@ -2,10 +2,10 @@ import axios from "axios";
 import { AnimatePresence } from "framer-motion";
 import { useEffect, useRef } from "react";
 import styled from "styled-components";
-import { Overlay, TabItems } from "../../pages/Home";
+import { Overlay, TabItems } from "../../../pages/Home";
 import { useQueryClient } from "react-query";
 import { useRecoilState } from "recoil";
-import { onProfileImgClickedAtom } from "../../utills/atoms";
+import { onProfileImgClickedAtom } from "../../../utills/atoms";
 
 const TabItem = styled.div`
   text-align: center;

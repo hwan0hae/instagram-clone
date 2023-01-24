@@ -30,3 +30,8 @@ export const onProfileImgClickedAtom = atom<boolean>({
   key: "profileImgClicked",
   default: false,
 });
+
+export const onFeedUploadClickedAtom = atom<boolean>({
+  key: "feedUploadClicked",
+  default: false,
+});

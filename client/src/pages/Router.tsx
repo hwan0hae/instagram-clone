@@ -5,7 +5,7 @@ import { useRecoilState, useSetRecoilState } from "recoil";
 import { isLoginAtom, userAtom } from "../utills/atoms";
 import { loginSuccess } from "../utills/api";
 
-import Header from "../components/layout/Header";
+import Header from "../components/layout/Header/Header";
 import Login from "./Login";
 import Home from "./Home";
 import MyPage from "./MyPage";

@@ -62,7 +62,7 @@ Server
 - no accessToken은 에러처리 X.
 - refreshToken 갱신시 쿠키와 DB 토큰 비교 확인
 
-# 1월 18일 목요일
+# 1월 19일 목요일
 
 Client
 
@@ -76,7 +76,7 @@ Sever
 - refreshToken 만료시 로그아웃처리(accessToken값 제거) > 새로 로그인 해야함
   > > 서버 꺼지던 문제 err발생 시(만료) return으로 후 동작 막음
 
-# 1월 19일 금요일
+# 1월 20일 금요일
 
 Client
 
@@ -92,27 +92,57 @@ Sever
 - 현재 사진 삭제 기능
 - 사진 변경 or 삭제시 overlay close
 
-# 1월 20일 토요일
+# 1월 21일 토요일
 
 Client
 
 - Edit Page 구현
 - profileUpload 컴포넌트화
+- user 정보 소개 추가
 
 Sever
 
 - 프로필 사진 변경 코드 개선 및 오류 수정 (절대 경로 DB저장 변경 후 서버 사진 삭제 안되는 버그 수정)
 - profile modify 기능 구현
 
--- 해야 할 일 --
-// 라우터 \* >> url검색및 새로고침시 다 default 로 보내버리는 이슈
-// edit 기능
+# 1월 23일 월요일
 
-//게시물
-//팔로우 기능
+공통
+
+- 게시물 업로드 구현
+- MyPage 내가 올린 Feed 가져오기 구현
+- Home 모든 Feed 가져오기 구현
+
+Client
+
+- Header Hamburger 분해
+- Nav > 만들기(게시물) 업로드 모달 구성
+- MyPage Feed 1:1 비율 고정
+
+Server
+
+- feed DB 테이블 생성 및 컬렉션 저장
+- 피드 최신순 데이터 건내주기
+
+- -- 해야 할 일 --
+
+게시물
+
+- 피드 or 라우터 id 입력시 존재하는 아이디면 해당 페이지 구성하기
+- MyPage 피드/홈 댓글 클릭시 모달창 > 컨텐츠 출력
+- 댓글 기능
+- 좋아요 기능
+
+!! 게시물 (게시글, 댓글, 좋아요)
+!! 라우터 \* >> url검색및 새로고침시 다 default 로 보내버리는 이슈
+!! 푸터
+
+?? 로그인 / 회원가입 / 수정 submit 비활성화/활성화 기능
+?? 팔로우 기능...?
 
 // 코드 try catch 등 정리
 
 # 깃허브 정리
 
-https://velog.io/@laeyoung/%ED%95%98-Frontend-%EA%B0%9C%EB%B0%9C%EC%9E%90%ED%98%95%EB%93%A4
+- 내용 정리 + 배포 주소 등
+  https://velog.io/@laeyoung/%ED%95%98-Frontend-%EA%B0%9C%EB%B0%9C%EC%9E%90%ED%98%95%EB%93%A4
