@@ -1,3 +1,4 @@
+import { ObjectId } from "mongoose";
 import { atom } from "recoil";
 
 export const isDarkAtom = atom<boolean>({
@@ -18,7 +19,7 @@ export interface IUser {
   introduction: string;
   role: number;
   __v: number;
-  _id: string;
+  _id: ObjectId;
 }
 
 export const userAtom = atom<IUser | null>({
@@ -33,5 +34,10 @@ export const onProfileImgClickedAtom = atom<boolean>({
 
 export const onFeedUploadClickedAtom = atom<boolean>({
   key: "feedUploadClicked",
+  default: false,
+});
+
+export const detailClickedAtom = atom<boolean>({
+  key: "detailClicked",
   default: false,
 });

@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { useQueryClient } from "react-query";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { logout } from "../../../utills/api";
@@ -69,6 +69,7 @@ const TabItem = styled.div`
 
 function Hamburger() {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const setIsDarkMode = useSetRecoilState(isDarkAtom);
   const tabMenuRef = useRef<HTMLDivElement>(null);
   const tabRef = useRef<HTMLDivElement>(null);
@@ -83,6 +84,7 @@ function Hamburger() {
     setUser(null);
     logout();
     queryClient.invalidateQueries("LoginSuccess");
+    navigate("/");
   };
 
   useEffect(() => {

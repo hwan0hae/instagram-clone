@@ -15,6 +15,7 @@ import MyPageSaved from "./MyPageSaved";
 import MyPageTagged from "./MyPageTagged";
 import Register from "./Register";
 import Edit from "./Edit";
+import Detail from "./Detail";
 
 export default function Router() {
   const [isLogin, setIsLogin] = useRecoilState<boolean>(isLoginAtom);
@@ -39,24 +40,30 @@ export default function Router() {
           <Header />
 
           <Routes>
-            <Route index path="/" element={<Home />} />
+            <Route path="/" element={<Home />} />
             <Route path="/:id" element={<MyPage />}>
-              <Route index path="/:id" element={<MyPageFeed />} />
-              <Route path="/:id/reels" element={<MyPageReels />} />
-              <Route path="/:id/saved" element={<MyPageSaved />} />
-              <Route path="/:id/tagged" element={<MyPageTagged />} />
+              <Route index element={<MyPageFeed />} />
+              <Route path="reels" element={<MyPageReels />} />
+              <Route path="saved" element={<MyPageSaved />} />
+              <Route path="tagged" element={<MyPageTagged />} />
             </Route>
+            {/* <Route path="p/:id" element={<MyPage />} /> */}
+            <Route path="p/:id" element={<Home />} />
+
             <Route path="/edit" element={<Edit />} />
-            <Route path="*" element={<Navigate to="/" />} />
+
+            {/* <Route path="*" element={<Navigate to="/" />} /> */}
           </Routes>
         </>
       ) : (
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="*" element={<Navigate to="/" />} />
+          {/* <Route path="*" element={<Navigate to="/" />} /> */}
         </Routes>
       )}
     </BrowserRouter>
   );
 }
+
+//:id 파라메터구해서 해당 정보 가져오기 뿌려주기 > auth가 맞으면 내 페이지 인것으로

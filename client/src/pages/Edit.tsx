@@ -172,6 +172,15 @@ function Edit() {
     }
   );
 
+  const onSubmit = (data: IForm) => {
+    const info = {
+      name: data.name,
+      id: data.id,
+      introduction: data.introduction,
+    };
+    modifyMutation.mutate(info);
+  };
+
   useEffect(() => {
     const firstError = (
       Object.keys(errors) as Array<keyof typeof errors>
@@ -184,15 +193,6 @@ function Edit() {
       setFocus(firstError);
     }
   }, [errors, setFocus]);
-
-  const onSubmit = (data: IForm) => {
-    const info = {
-      name: data.name,
-      id: data.id,
-      introduction: data.introduction,
-    };
-    modifyMutation.mutate(info);
-  };
 
   return (
     <Wrapper>

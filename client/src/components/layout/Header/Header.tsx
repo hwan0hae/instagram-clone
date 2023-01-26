@@ -101,7 +101,7 @@ export const SvgContainer = styled.div`
 `;
 export const NavMenuTip = styled.div`
   background-color: ${(props) => props.theme.menuColor};
-  font-weight: 400;
+  font-weight: 500;
   padding: 7px 12px;
   border-radius: 5px;
   box-shadow: -2px 3px 3px rgba(0, 0, 0, 0.1), -5px 5px 10px rgba(0, 0, 0, 0.03);
@@ -217,7 +217,7 @@ export default function Header() {
               <NavMenuName>홈</NavMenuName>
             </SvgContainer>
           </Link>
-          <Link to="/">
+          <Link to="/feed">
             <SvgContainer>
               <NavMenuTip>검색</NavMenuTip>
               <Svg
@@ -298,7 +298,7 @@ export default function Header() {
           </SvgContainer>
           <Link to={`/${user?.id}`}>
             <SvgContainer>
-              <NavMenuTip>프로필</NavMenuTip>
+              <NavMenuTip>프로필﹒{user?.id}</NavMenuTip>
               <ProfileImg
                 src={user?.profileImage}
                 clicked={Boolean(myPageMatch || myPageMatch2)}

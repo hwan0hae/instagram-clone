@@ -4,6 +4,8 @@ import { getMyFeed, IGetFeed } from "../utills/api";
 import PacmanLoader from "react-spinners/PacmanLoader";
 import { useRecoilValue } from "recoil";
 import { isDarkAtom } from "../utills/atoms";
+import { PathMatch, useMatch, useNavigate } from "react-router-dom";
+import Detail from "./Detail";
 
 const Container = styled.div`
   width: 100%;
@@ -25,27 +27,31 @@ const FeedBox = styled.div`
 const Feed = styled.img`
   width: 100%;
   height: 100%;
-
-  cursor: pointer;
 `;
 
-export default function MypageFeed() {
+export default function MyPageFeed() {
+  const navigate = useNavigate();
+  const feedPathMatch: PathMatch<string> | null = useMatch(`/p/:id`);
   const { data, isLoading } = useQuery<IGetFeed[]>("myFeed", getMyFeed);
-  console.log(data);
-  const isDarkMode = useRecoilValue(isDarkAtom);
+  const isDarkMode = useRecoilValue<boolean>(isDarkAtom);
+  // const [detailClicked, setDetailClicked] =
+  //   useRecoilState<boolean>(detailClickedAtom);
   return (
-    <Container>
-      {isLoading ? (
-        <PacmanLoader color={isDarkMode ? "white" : "black"} size="50px" />
-      ) : (
-        <FeedContainer>
-          {data?.map((feed, index) => (
-            <FeedBox key={index}>
-              <Feed src={feed.content.feedImage} />
-            </FeedBox>
-          ))}
-        </FeedContainer>
-      )}
-    </Container>
+    <>
+      <Container>
+        {isLoading ? (
+          <PacmanLoader color={isDarkMode ? "white" : "black"} size="50px" />
+        ) : (
+          <FeedContainer>
+            {data?.map((feed, index) => (
+              <FeedBox key={index} onClick={() => navigate(`/p/${feed._id}`)}>
+                <Feed src={feed.content.feedImage} />
+              </FeedBox>
+            ))}
+          </FeedContainer>
+        )}
+      </Container>
+      {feedPathMatch ? <Detail /> : null}
+    </>
   );
 }

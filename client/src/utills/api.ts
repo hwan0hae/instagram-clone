@@ -2,13 +2,28 @@ import axios from "axios";
 import { Date, ObjectId } from "mongoose";
 import api from "./apiController";
 
+export interface IAllUser {
+  _id: ObjectId;
+  name: string;
+  email: string;
+  id: string;
+  role: number;
+  profileImage: string;
+  introduction: string;
+}
+
+export async function allUser() {
+  const request = await axios.get("/api/users/allUser");
+
+  return request.data;
+}
 export interface ILoginUser {
   email: string;
   password: string;
 }
 
 export async function loginUser(info: ILoginUser) {
-  const request = await axios.post("api/users/login", info);
+  const request = await axios.post("/api/users/login", info);
 
   return request.data;
 }
@@ -21,7 +36,7 @@ export interface IRegistrtUser {
 }
 
 export async function registerUser(info: IRegistrtUser) {
-  const request = await axios.post("api/users/register", info);
+  const request = await axios.post("/api/users/register", info);
 
   return request.data;
 }
@@ -52,15 +67,28 @@ export async function modify(info: IModify) {
 }
 
 export interface IGetFeed {
+  _id: ObjectId;
+  writer: ObjectId;
+  writerProfile: {
+    profileImage: string;
+    id: string;
+  };
   content: {
     feedImage: string;
     text: string;
   };
-  writer: {
-    writer: ObjectId;
-    profileImage: string;
-    id: string;
-  };
+  comments: [
+    {
+      writer: ObjectId;
+      comment: string;
+      createDate: Date;
+      writerProfile: {
+        profileImage: string;
+        id: string;
+      };
+    }
+  ];
+  likeCount: number;
   createDate: Date;
 }
 
@@ -73,5 +101,18 @@ export async function getMyFeed() {
 export async function getFeed() {
   const request = await axios.get("/api/feed/feed");
 
+  return request.data;
+}
+
+export interface IComment {
+  writer: ObjectId;
+  comment: string;
+  feedId: ObjectId;
+}
+
+export async function commentWrite(comment: IComment) {
+  const { feedId, ...other } = comment;
+
+  const request = await axios.post(`/api/feed/${feedId}/comment`, other);
   return request.data;
 }

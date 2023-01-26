@@ -1,14 +1,15 @@
 import axios from "axios";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { Overlay, Svg } from "../../../pages/Home";
 import { useQueryClient } from "react-query";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { onFeedUploadClickedAtom, userAtom } from "../../../utills/atoms";
 import { useForm } from "react-hook-form";
+import { Overlay } from "../Home/Meatballs";
+import { Svg } from "../Home/Feed";
 
-const TabItems = styled(motion.div)<{ selected: boolean }>`
+const Container = styled(motion.div)<{ selected: boolean }>`
   background-color: ${(props) => props.theme.menuColor};
   width: ${(props) => (props.selected ? "100%" : "50%")};
   max-width: 1080px;
@@ -70,10 +71,10 @@ const ContentTitle = styled.h1`
   font-weight: 600;
   color: ${(props) => props.theme.textColor};
 `;
-const SvgBtn = styled.button`
-  border: none;
+const SvgBtn = styled.div`
   background-color: transparent;
-  padding: 0;
+  display: flex;
+  align-items: center;
   cursor: pointer;
 `;
 
@@ -115,7 +116,7 @@ const ProfileImg = styled.img`
   height: 32px;
   border-radius: 50%;
 `;
-const ProfileText = styled.span`
+export const ProfileId = styled.span`
   font-size: 1rem;
   font-weight: 600;
   margin-bottom: 3px;
@@ -147,10 +148,11 @@ function FeedUpload() {
   const [onFeedUploadClicked, setOnFeedUploadClicked] = useRecoilState<boolean>(
     onFeedUploadClickedAtom
   );
-  const [imgSelected, setImgselected] = useState<boolean>(false);
+  const [imgSelected, setImgSelected] = useState<boolean>(false);
   const [feedImg, setFeedImg] = useState<File | string>("");
   const [preview, setPreview] = useState<string>("");
   const { register, handleSubmit, setValue } = useForm<IForm>();
+
   const onImgChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const target = e.currentTarget;
     const files = (target.files as FileList)[0];
@@ -165,7 +167,17 @@ function FeedUpload() {
     }
     setFeedImg(files);
     setPreview(URL.createObjectURL(files));
-    setImgselected(true);
+    setImgSelected(true);
+
+    target.value = "";
+  };
+
+  const upLoadCancle = () => {
+    setValue("content", "");
+    setFeedImg("");
+    setPreview("");
+    setImgSelected(false);
+    setOnFeedUploadClicked(false);
   };
 
   const onFeedUpload = async (data: IForm) => {
@@ -180,12 +192,8 @@ function FeedUpload() {
 
     if (response.data.success) {
       //작업 성공시 로직
-      setValue("content", "");
-      setFeedImg("");
-      setPreview("");
-      setImgselected(false);
-      setOnFeedUploadClicked(false);
-      queryClient.invalidateQueries("Feed");
+      upLoadCancle();
+      queryClient.invalidateQueries("feed");
       queryClient.invalidateQueries("myFeed");
     } else {
       console.log(response.data.message);
@@ -198,11 +206,7 @@ function FeedUpload() {
         TabItemsRef.current &&
         !TabItemsRef.current.contains(e.target as Node)
       ) {
-        setValue("content", "");
-        setFeedImg("");
-        setPreview("");
-        setImgselected(false);
-        setOnFeedUploadClicked(false);
+        upLoadCancle();
       }
     };
 
@@ -215,7 +219,7 @@ function FeedUpload() {
       <AnimatePresence>
         {onFeedUploadClicked && (
           <Overlay animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <TabItems
+            <Container
               selected={imgSelected}
               ref={TabItemsRef}
               initial={{ scale: 1.2 }}
@@ -224,7 +228,7 @@ function FeedUpload() {
               {imgSelected ? (
                 <form onSubmit={handleSubmit(onFeedUpload)}>
                   <ContentTitleBox>
-                    <SvgBtn>
+                    <SvgBtn onClick={upLoadCancle}>
                       <Svg
                         style={{ width: 20, height: 20 }}
                         xmlns="http://www.w3.org/2000/svg"
@@ -242,7 +246,7 @@ function FeedUpload() {
                     <ContentsBox>
                       <ProfileBox>
                         <ProfileImg src={user?.profileImage} />
-                        <ProfileText>{user?.id}</ProfileText>
+                        <ProfileId>{user?.id}</ProfileId>
                       </ProfileBox>
                       <TextArea
                         {...register("content")}
@@ -271,15 +275,14 @@ function FeedUpload() {
                   </TabItem>
                 </>
               )}
-            </TabItems>
+            </Container>
           </Overlay>
         )}
       </AnimatePresence>
       <input
         type="file"
-        style={{ display: "none" }}
+        hidden
         accept="image/*"
-        className="ImgInput"
         onChange={onImgChange}
         ref={imgInput}
       />

@@ -1,10 +1,10 @@
 import styled from "styled-components";
 import { Link, Outlet, useMatch } from "react-router-dom";
-import { SvgBtn, Svg } from "./Home";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { onProfileImgClickedAtom, userAtom } from "../utills/atoms";
 import { Helmet } from "react-helmet-async";
 import ImgUpload from "../components/layout/ImgUpload/ImgUpload";
+import { Svg, SvgBtn } from "../components/layout/Home/Feed";
 
 const Wrapper = styled.div`
   width: clac(100%-72px);
