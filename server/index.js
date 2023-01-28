@@ -13,8 +13,15 @@ import {
   profileUpload,
   profileDelete,
   profileModification,
+  allUser,
 } from "./controller/users.js";
-import { getFeed, getMyFeed, upload } from "./controller/feed.js";
+import {
+  getAllFeed,
+  getMyFeed,
+  feedUpload,
+  commentWrite,
+  getFeed,
+} from "./controller/feed.js";
 
 const app = express();
 dotenv.config();
@@ -68,16 +75,20 @@ app.get("/api/users/login/success", loginSuccess);
 app.get("/api/users/refreshtoken", refreshToken);
 app.get("/api/users/logout", logout);
 
+app.get("/api/users/allUser", allUser);
+
 /** 프로필  */
 app.post("/api/users/profileupload", profileUploadMiddleware, profileUpload);
 app.get("/api/users/profiledelete", profileDelete);
 app.post("/api/users/profilemodification", profileModification);
 
 /** 피드  */
-app.post("/api/feed/upload", feedUploadMiddleware, upload);
-
 app.get("/api/feed/myfeed", getMyFeed);
-app.get("/api/feed/feed", getFeed);
+app.get("/api/feed/feed", getAllFeed);
+app.get("/api/feed/:feedId/detail", getFeed);
+
+app.post("/api/feed/upload", feedUploadMiddleware, feedUpload);
+app.post("/api/feed/:feedId/comment", commentWrite);
 
 const port = process.env.PORT;
 app.listen(port, () => {

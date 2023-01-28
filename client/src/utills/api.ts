@@ -98,8 +98,14 @@ export async function getMyFeed() {
   return request.data;
 }
 
-export async function getFeed() {
+export async function getAllFeed() {
   const request = await axios.get("/api/feed/feed");
+
+  return request.data;
+}
+
+export async function getFeed(feedId: string) {
+  const request = await axios.get(`/api/feed/${feedId}/detail`);
 
   return request.data;
 }

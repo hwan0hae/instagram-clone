@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { useQueryClient } from "react-query";
 import { useRecoilState } from "recoil";
 import { onProfileImgClickedAtom } from "../../../utills/atoms";
-import { Overlay, TabItems } from "../Home/Meatballs";
+import { Overlay, TabItems } from "../Feed/Meatballs";
 
 const TabItem = styled.div`
   text-align: center;

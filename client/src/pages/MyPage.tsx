@@ -4,7 +4,7 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { onProfileImgClickedAtom, userAtom } from "../utills/atoms";
 import { Helmet } from "react-helmet-async";
 import ImgUpload from "../components/layout/ImgUpload/ImgUpload";
-import { Svg, SvgBtn } from "../components/layout/Home/Feed";
+import { Svg, SvgBtn } from "../components/layout/Feed/Feed";
 
 const Wrapper = styled.div`
   width: clac(100%-72px);

@@ -7,27 +7,35 @@ const {
 
 const FeedSchema = mongoose.Schema({
   writer: {
-    writer: {
-      type: ObjectId,
-      required: true,
-      ref: "User",
-    },
-    profileImage: {
-      type: String,
-      required: true,
-    },
-    id: {
-      type: String,
-      maxlength: 20,
-      minlength: 5,
-      required: true,
-    },
+    type: ObjectId,
+    required: true,
+    ref: "User",
   },
   content: {
     feedImage: { type: String, required: true },
     text: { type: String },
   },
-
+  comments: [
+    {
+      writer: {
+        type: ObjectId,
+        required: true,
+        ref: "User",
+      },
+      comment: {
+        type: String,
+        required: true,
+      },
+      createDate: {
+        type: Date,
+        default: Date.now,
+      },
+    },
+  ],
+  likeCount: {
+    type: Number,
+    default: 0,
+  },
   createDate: {
     type: Date,
     default: Date.now,
@@ -37,3 +45,5 @@ const FeedSchema = mongoose.Schema({
 const Feed = mongoose.model("Feed", FeedSchema);
 
 export default Feed;
+
+//feed에 uid만 가지고 id랑 이미지 가져오는것?

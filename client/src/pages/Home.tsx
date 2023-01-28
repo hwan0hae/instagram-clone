@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import Feed from "../components/layout/Home/Feed";
-import StoryHeader from "../components/layout/Home/StoryHeader";
+import Feed from "../components/layout/Feed/Feed";
+import StoryHeader from "../components/layout/Feed/StoryHeader";
 
 export const Wrapper = styled.div`
   width: calc(100% - 72px);

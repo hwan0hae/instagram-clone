@@ -9,6 +9,7 @@ const Nav = styled.div`
   display: flex;
   flex-direction: column;
   position: fixed;
+  top: 0;
   left: 0;
   background-color: ${(props) => props.theme.containerColor};
   width: 72px;

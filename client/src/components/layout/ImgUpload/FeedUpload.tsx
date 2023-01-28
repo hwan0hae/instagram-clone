@@ -6,8 +6,8 @@ import { useQueryClient } from "react-query";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { onFeedUploadClickedAtom, userAtom } from "../../../utills/atoms";
 import { useForm } from "react-hook-form";
-import { Overlay } from "../Home/Meatballs";
-import { Svg } from "../Home/Feed";
+import { Overlay } from "../Feed/Meatballs";
+import { Svg } from "../Feed/Feed";
 
 const Container = styled(motion.div)<{ selected: boolean }>`
   background-color: ${(props) => props.theme.menuColor};
@@ -193,7 +193,7 @@ function FeedUpload() {
     if (response.data.success) {
       //작업 성공시 로직
       upLoadCancle();
-      queryClient.invalidateQueries("feed");
+      queryClient.invalidateQueries("allFeed");
       queryClient.invalidateQueries("myFeed");
     } else {
       console.log(response.data.message);

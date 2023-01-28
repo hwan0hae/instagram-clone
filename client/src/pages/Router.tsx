@@ -48,7 +48,7 @@ export default function Router() {
               <Route path="tagged" element={<MyPageTagged />} />
             </Route>
             {/* <Route path="p/:id" element={<MyPage />} /> */}
-            <Route path="p/:id" element={<Home />} />
+            <Route path="/feed/:feedId" element={<Home />} />
 
             <Route path="/edit" element={<Edit />} />
 
