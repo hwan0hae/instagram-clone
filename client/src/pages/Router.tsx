@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import { useQuery } from "react-query";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { isLoginAtom, userAtom } from "../utills/atoms";
@@ -18,6 +18,8 @@ import Edit from "./Edit";
 import Detail from "./Detail";
 
 export default function Router() {
+  const location = useLocation();
+  const state = location.state as { backgroundLocation?: Location };
   const [isLogin, setIsLogin] = useRecoilState<boolean>(isLoginAtom);
   const setUser = useSetRecoilState(userAtom);
 
@@ -34,26 +36,32 @@ export default function Router() {
   }, [loginUser, setIsLogin, setUser]);
 
   return (
-    <BrowserRouter basename={process.env.PUBLIC_URL}>
+    <>
       {loginUser.isLoading ? null : isLogin ? (
         <>
           <Header />
-
-          <Routes>
+          <Routes location={state?.backgroundLocation || location}>
             <Route path="/" element={<Home />} />
+            {/* <Route path="/feed/:feedId" element={<Home />} /> */}
+
             <Route path="/:id" element={<MyPage />}>
               <Route index element={<MyPageFeed />} />
+
               <Route path="reels" element={<MyPageReels />} />
               <Route path="saved" element={<MyPageSaved />} />
               <Route path="tagged" element={<MyPageTagged />} />
             </Route>
-            {/* <Route path="p/:id" element={<MyPage />} /> */}
-            <Route path="/feed/:feedId" element={<Home />} />
 
             <Route path="/edit" element={<Edit />} />
 
             {/* <Route path="*" element={<Navigate to="/" />} /> */}
           </Routes>
+
+          {state?.backgroundLocation && (
+            <Routes>
+              <Route path="/feed/:feedId" element={<Detail />} />
+            </Routes>
+          )}
         </>
       ) : (
         <Routes>
@@ -62,7 +70,7 @@ export default function Router() {
           {/* <Route path="*" element={<Navigate to="/" />} /> */}
         </Routes>
       )}
-    </BrowserRouter>
+    </>
   );
 }
 

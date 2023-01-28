@@ -6,6 +6,7 @@ import { useQueryClient } from "react-query";
 import { useRecoilState } from "recoil";
 import { onProfileImgClickedAtom } from "../../../utills/atoms";
 import { Overlay, TabItems } from "../Feed/Meatballs";
+import { ModalScrollPrevent } from "../../../utills/utill";
 
 const TabItem = styled.div`
   text-align: center;
@@ -108,6 +109,8 @@ function ImgUpload() {
     window.addEventListener("mousedown", handleClick);
     return () => window.removeEventListener("mousedown", handleClick);
   }, [TabItemsRef, setOnProfileImgClicked]);
+
+  ModalScrollPrevent(onProfileImgClicked);
 
   return (
     <>

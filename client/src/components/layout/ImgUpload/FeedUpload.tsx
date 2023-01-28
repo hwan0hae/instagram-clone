@@ -8,6 +8,7 @@ import { onFeedUploadClickedAtom, userAtom } from "../../../utills/atoms";
 import { useForm } from "react-hook-form";
 import { Overlay } from "../Feed/Meatballs";
 import { Svg } from "../Feed/Feed";
+import { ModalScrollPrevent } from "../../../utills/utill";
 
 const Container = styled(motion.div)<{ selected: boolean }>`
   background-color: ${(props) => props.theme.menuColor};
@@ -172,7 +173,8 @@ function FeedUpload() {
     target.value = "";
   };
 
-  const upLoadCancle = () => {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const upLoadCancel = () => {
     setValue("content", "");
     setFeedImg("");
     setPreview("");
@@ -192,7 +194,7 @@ function FeedUpload() {
 
     if (response.data.success) {
       //작업 성공시 로직
-      upLoadCancle();
+      upLoadCancel();
       queryClient.invalidateQueries("allFeed");
       queryClient.invalidateQueries("myFeed");
     } else {
@@ -206,13 +208,15 @@ function FeedUpload() {
         TabItemsRef.current &&
         !TabItemsRef.current.contains(e.target as Node)
       ) {
-        upLoadCancle();
+        upLoadCancel();
       }
     };
 
     window.addEventListener("mousedown", handleClick);
     return () => window.removeEventListener("mousedown", handleClick);
-  }, [TabItemsRef, setOnFeedUploadClicked, setValue]);
+  }, [TabItemsRef, upLoadCancel]);
+
+  ModalScrollPrevent(onFeedUploadClicked);
 
   return (
     <>
@@ -228,7 +232,7 @@ function FeedUpload() {
               {imgSelected ? (
                 <form onSubmit={handleSubmit(onFeedUpload)}>
                   <ContentTitleBox>
-                    <SvgBtn onClick={upLoadCancle}>
+                    <SvgBtn onClick={upLoadCancel}>
                       <Svg
                         style={{ width: 20, height: 20 }}
                         xmlns="http://www.w3.org/2000/svg"

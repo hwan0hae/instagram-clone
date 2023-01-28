@@ -103,7 +103,6 @@ export async function getAllFeed() {
 
   return request.data;
 }
-
 export async function getFeed(feedId: string) {
   const request = await axios.get(`/api/feed/${feedId}/detail`);
 

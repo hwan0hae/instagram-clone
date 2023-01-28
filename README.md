@@ -171,12 +171,15 @@ Server
 
 # 1월 28일 토요일
 
+-Client
+
+- Detail 페이지 마무리
+- Detail 모달형식 구현(백그라운드 Home, Mypage 등)
+- 디테일 페이지에서 뒤에 스크롤 되는 이슈 해결
+
 -- 해야 할 일 --
 
-- Detail page 진행(게시부분 index랑 확인해햘듯)
-
 - 좋아요 기능
-
 - 피드 or 라우터 id 입력시 존재하는 아이디면 해당 페이지 구성하기
 
 !! 라우터 \* >> url검색및 새로고침시 다 default 로 보내버리는 이슈
@@ -194,3 +197,5 @@ Server
 
 - 내용 정리 + 배포 주소 등
   https://velog.io/@laeyoung/%ED%95%98-Frontend-%EA%B0%9C%EB%B0%9C%EC%9E%90%ED%98%95%EB%93%A4
+
+//ㅇㅁㄴㄴㅋㅋㅋㅋㅋㅇㄴ망만음ㄴ

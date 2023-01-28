@@ -1,9 +1,8 @@
 import styled from "styled-components";
-import { Link, PathMatch, useMatch } from "react-router-dom";
+import { Link, PathMatch, useLocation, useMatch } from "react-router-dom";
 import { useQuery } from "react-query";
 import { getAllFeed, IGetFeed } from "../../../utills/api";
 import Meatballs from "./Meatballs";
-import Detail from "../../../pages/Detail";
 
 import CommentWrite from "./CommentWrite";
 import Section from "./Section";
@@ -104,6 +103,7 @@ const FeedCommentBox = styled(FeedContentBox)`
 `;
 
 function Feed() {
+  const location = useLocation();
   const { data, isLoading } = useQuery<IGetFeed[]>("allFeed", getAllFeed);
   const feedPathMatch: PathMatch<string> | null = useMatch(`/feed/:feedId`);
   return (
@@ -139,7 +139,10 @@ function Feed() {
 
                 {(feed.comments.length as number) !== 0 ? (
                   <>
-                    <Link to={`/feed/${feed._id}`}>
+                    <Link
+                      to={`/feed/${feed._id}`}
+                      state={{ backgroundLocation: location }}
+                    >
                       <FeedComments>
                         댓글 {feed.comments.length}개 모두 보기
                       </FeedComments>
@@ -161,7 +164,6 @@ function Feed() {
           ))}
         </>
       )}
-      {feedPathMatch ? <Detail /> : null}
     </>
   );
 }

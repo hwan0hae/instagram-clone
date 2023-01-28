@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet-async";
+import { BrowserRouter } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { ThemeProvider, createGlobalStyle } from "styled-components";
 import Router from "./pages/Router";
@@ -89,7 +90,9 @@ function App() {
         />
         {/* meta태그 SEO 검색엔진 */}
       </Helmet>
-      <Router />
+      <BrowserRouter basename={process.env.PUBLIC_URL}>
+        <Router />
+      </BrowserRouter>
     </ThemeProvider>
   );
 }

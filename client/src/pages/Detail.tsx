@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ObjectId } from "mongoose";
 import { useEffect, useRef } from "react";
 import { useQuery } from "react-query";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import CommentWrite from "../components/layout/Feed/CommentWrite";
 import Meatballs, { Overlay } from "../components/layout/Feed/Meatballs";
@@ -114,6 +114,7 @@ const BottomFixed = styled.div`
 `;
 
 function Detail() {
+  const location = useLocation();
   const navigate = useNavigate();
   const { feedId } = useParams();
   const DetailRef = useRef<HTMLDivElement>(null);
@@ -125,13 +126,13 @@ function Detail() {
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       if (DetailRef.current && !DetailRef.current.contains(e.target as Node)) {
-        navigate("/");
+        navigate(location.state?.backgroundLocation.pathname);
       }
     };
 
     window.addEventListener("mousedown", handleClick);
     return () => window.removeEventListener("mousedown", handleClick);
-  }, [DetailRef, navigate]);
+  }, [DetailRef, location.state?.backgroundLocation.pathname, navigate]);
 
   ModalScrollPrevent();
 

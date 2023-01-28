@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
+import { ModalScrollPrevent } from "../../../utills/utill";
 import { Svg, SvgBtn } from "./Feed";
 
 export const Overlay = styled(motion.div)`
@@ -67,6 +68,8 @@ function Meatballs() {
     window.addEventListener("mousedown", handleClick);
     return () => window.removeEventListener("mousedown", handleClick);
   }, [TabItemsRef]);
+
+  ModalScrollPrevent(onTabClicked);
 
   return (
     <>
