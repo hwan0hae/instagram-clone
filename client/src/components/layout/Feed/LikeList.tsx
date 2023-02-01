@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ObjectId } from "mongoose";
 import { useEffect, useRef, useState } from "react";
 import { useQuery } from "react-query";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { getLikeList, IGetLikeList } from "../../../utills/api";
 import { ModalScrollPrevent } from "../../../utills/utill";
@@ -98,8 +98,9 @@ interface ILikeList {
 }
 
 function LikeList({ feedId, modalVisible, setModalVisible }: ILikeList) {
-  const ModalRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const location = useLocation();
+  const ModalRef = useRef<HTMLDivElement>(null);
   const { data, isLoading } = useQuery<IGetLikeList>("likeList", () =>
     getLikeList(feedId)
   );
@@ -113,7 +114,7 @@ function LikeList({ feedId, modalVisible, setModalVisible }: ILikeList) {
     return () => window.removeEventListener("mousedown", handleClick);
   }, [ModalRef, setModalVisible]);
 
-  ModalScrollPrevent(modalVisible);
+  ModalScrollPrevent(location.state?.backgroundLocation ? false : modalVisible);
   return (
     <>
       <AnimatePresence>
