@@ -21,6 +21,8 @@ import {
   feedUpload,
   commentWrite,
   getFeed,
+  like,
+  getLikeList,
 } from "./controller/feed.js";
 
 const app = express();
@@ -86,9 +88,11 @@ app.post("/api/users/profilemodification", profileModification);
 app.get("/api/feed/myfeed", getMyFeed);
 app.get("/api/feed/feed", getAllFeed);
 app.get("/api/feed/:feedId/detail", getFeed);
+app.get("/api/feed/:feedId/likelist", getLikeList);
 
 app.post("/api/feed/upload", feedUploadMiddleware, feedUpload);
 app.post("/api/feed/:feedId/comment", commentWrite);
+app.post("/api/feed/:feedId/like", like);
 
 const port = process.env.PORT;
 app.listen(port, () => {

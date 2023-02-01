@@ -70,7 +70,6 @@ const ProfileImg = styled.img`
   height: 32px;
   border: 1px solid ${(props) => props.theme.containerLine};
   border-radius: 50%;
-  background-color: white;
 `;
 
 const ProfileId = styled.div`
@@ -206,7 +205,10 @@ function Detail() {
                       ))}
                     </Comments>
                     <BottomFixed>
-                      <Section feedId={data?._id as ObjectId} />
+                      <Section
+                        feedId={data?._id as ObjectId}
+                        feedLikeList={data?.likeList as ObjectId[]}
+                      />
                       <CommentWrite feedId={data?._id as ObjectId} index={0} />
                     </BottomFixed>
                   </ContentsBox>

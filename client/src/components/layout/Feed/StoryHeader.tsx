@@ -14,7 +14,7 @@ const StoryContainer = styled.div`
   align-items: center;
   position: relative;
 
-  overflow: hidden;
+  overflow: auto;
 `;
 const StoryBox = styled.ul`
   display: flex;

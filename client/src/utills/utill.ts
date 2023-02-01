@@ -1,7 +1,6 @@
-import { useEffect } from "react";
-
+import { useEffect, useRef } from "react";
+/** 모달 오버레이에서 스크롤 방지 */
 export const ModalScrollPrevent = (modal: boolean = true) => {
-  // 모달 오버레이에서 스크롤 방지\
   useEffect(() => {
     if (!modal) return;
 
@@ -16,4 +15,13 @@ export const ModalScrollPrevent = (modal: boolean = true) => {
       window.scrollTo(0, parseInt(scrollY || "0", 10) * -1);
     };
   }, [modal]);
+};
+/** 첫 렌더링 막기 */
+export const useDidMountEffect = (func: () => any, deps: Array<any>) => {
+  const didMount = useRef(false);
+
+  useEffect(() => {
+    if (didMount.current) func();
+    else didMount.current = true;
+  }, deps);
 };

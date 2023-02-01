@@ -7,7 +7,7 @@ import ImgUpload from "../components/layout/ImgUpload/ImgUpload";
 import { Svg, SvgBtn } from "../components/layout/Feed/Feed";
 
 const Wrapper = styled.div`
-  width: clac(100%-72px);
+  width: clac(100% - 72px);
   position: relative;
   padding: 30px 20px;
   margin-left: 72px;

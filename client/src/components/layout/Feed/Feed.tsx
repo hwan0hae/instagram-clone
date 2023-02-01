@@ -1,9 +1,8 @@
 import styled from "styled-components";
-import { Link, PathMatch, useLocation, useMatch } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useQuery } from "react-query";
 import { getAllFeed, IGetFeed } from "../../../utills/api";
 import Meatballs from "./Meatballs";
-
 import CommentWrite from "./CommentWrite";
 import Section from "./Section";
 
@@ -59,7 +58,7 @@ export const SvgBtn = styled.button`
   }
 `;
 export const Svg = styled.svg`
-  fill: ${(props) => [props.theme.textColor]};
+  fill: ${(props) => props.theme.textColor};
 
   stroke: ${(props) => props.theme.textColor};
   stroke-width: 1px;
@@ -105,7 +104,6 @@ const FeedCommentBox = styled(FeedContentBox)`
 function Feed() {
   const location = useLocation();
   const { data, isLoading } = useQuery<IGetFeed[]>("allFeed", getAllFeed);
-  const feedPathMatch: PathMatch<string> | null = useMatch(`/feed/:feedId`);
   return (
     <>
       {isLoading ? null : (
@@ -128,7 +126,7 @@ function Feed() {
               <FeedImgContainer>
                 <FeedImg src={feed.content.feedImage} />
               </FeedImgContainer>
-              <Section feedId={feed._id} />
+              <Section feedId={feed._id} feedLikeList={feed.likeList} />
               <FeedContentContainer>
                 <FeedContentBox>
                   <Link to={`/${feed?.writerProfile.id}`}>

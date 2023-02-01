@@ -32,10 +32,12 @@ const FeedSchema = mongoose.Schema({
       },
     },
   ],
-  likeCount: {
-    type: Number,
-    default: 0,
-  },
+  likeList: [
+    {
+      type: ObjectId,
+      default: null,
+    },
+  ],
   createDate: {
     type: Date,
     default: Date.now,

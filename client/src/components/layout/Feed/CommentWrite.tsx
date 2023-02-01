@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "react-query";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
-import { commentWrite, IComment, IGetFeed } from "../../../utills/api";
+import { commentWrite, IComment } from "../../../utills/api";
 import { userAtom } from "../../../utills/atoms";
 import { useEffect, useRef, useState } from "react";
 import { ObjectId } from "mongoose";
@@ -65,7 +65,7 @@ interface ICommentWrite {
   index: number;
 }
 
-function CommentWrite({ feedId, index }: ICommentWrite) {
+export default function CommentWrite({ feedId, index }: ICommentWrite) {
   const queryClient = useQueryClient();
   const imojiRef = useRef<HTMLDivElement>(null);
   const user = useRecoilValue(userAtom);
@@ -79,12 +79,9 @@ function CommentWrite({ feedId, index }: ICommentWrite) {
   const commentWriteMutation = useMutation(
     (comment: IComment) => commentWrite(comment),
     {
-      onSuccess: (data) => {
-        if (data.success) {
-          queryClient.invalidateQueries("allFeed");
-          queryClient.invalidateQueries("feed");
-        } else {
-        }
+      onSettled: () => {
+        queryClient.invalidateQueries("allFeed");
+        queryClient.invalidateQueries("feed");
       },
     }
   );
@@ -153,5 +150,3 @@ function CommentWrite({ feedId, index }: ICommentWrite) {
     </CommentWriteBox>
   );
 }
-
-export default CommentWrite;

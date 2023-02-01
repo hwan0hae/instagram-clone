@@ -139,3 +139,60 @@ export const getFeed = (req, res) => {
     res.status(500).json({ success: false, error });
   }
 };
+
+export const like = (req, res) => {
+  try {
+    const token = req.cookies.accessToken;
+    const { _id } = jwt.verify(token, process.env.ACCESS_SECRET);
+    const { feedId } = req.params;
+    const { like } = req.body;
+    if (like) {
+      Feed.findOneAndUpdate(
+        { _id: feedId },
+        { $push: { likeList: _id } },
+        (err, feed) => {
+          if (err) throw err;
+
+          res
+            .status(200)
+            .json({ success: true, message: "좋아요를 눌렀습니다." });
+        }
+      );
+    } else {
+      Feed.findOneAndUpdate(
+        { _id: feedId },
+        { $pull: { likeList: _id } },
+        (err, feed) => {
+          if (err) throw err;
+
+          res
+            .status(200)
+            .json({ success: true, message: "좋아요를 취소하였습니다." });
+        }
+      );
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, error });
+  }
+};
+
+export const getLikeList = (req, res) => {
+  try {
+    const { feedId } = req.params;
+    Feed.findOne({ _id: feedId }, async (err, feed) => {
+      if (err) throw err;
+      const likeList = await Promise.all(
+        feed.likeList.map(async (_id) => {
+          const listProfile = await User.find(
+            { _id },
+            { profileImage: 1, id: 1, name: 1, _id: 0 }
+          );
+          return listProfile[0];
+        })
+      );
+      res.status(200).json({ success: true, likeList });
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error });
+  }
+};

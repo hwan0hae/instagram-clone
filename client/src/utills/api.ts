@@ -88,7 +88,7 @@ export interface IGetFeed {
       };
     }
   ];
-  likeCount: number;
+  likeList: ObjectId[];
   createDate: Date;
 }
 
@@ -119,5 +119,31 @@ export async function commentWrite(comment: IComment) {
   const { feedId, ...other } = comment;
 
   const request = await axios.post(`/api/feed/${feedId}/comment`, other);
+  return request.data;
+}
+
+export interface ILike {
+  like: boolean;
+  feedId: ObjectId;
+}
+
+export async function likeUpdate(likeData: ILike) {
+  const { feedId, ...other } = likeData;
+
+  const request = await axios.post(`/api/feed/${feedId}/like`, other);
+  return request.data;
+}
+
+export interface IGetLikeList {
+  likeList: [
+    {
+      name: string;
+      id: string;
+      profileImage: string;
+    }
+  ];
+}
+export async function getLikeList(feedId: ObjectId) {
+  const request = await axios.get(`/api/feed/${feedId}/likelist`);
   return request.data;
 }
