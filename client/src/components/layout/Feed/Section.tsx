@@ -76,6 +76,7 @@ function Section({ feedId, feedLikeList }: ISection) {
     onSettled: () => {
       queryClient.invalidateQueries("allFeed");
       queryClient.invalidateQueries("feed");
+      queryClient.invalidateQueries("myFeed");
     },
   });
 
