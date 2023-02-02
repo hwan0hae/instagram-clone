@@ -1,13 +1,15 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ObjectId } from "mongoose";
 import { useEffect, useRef } from "react";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import CommentWrite from "../components/layout/Feed/CommentWrite";
 import Meatballs, { Overlay } from "../components/layout/Feed/Meatballs";
 import Section from "../components/layout/Feed/Section";
 import { getFeed, IGetFeed } from "../utills/api";
+import { userAtom } from "../utills/atoms";
 import { ModalScrollPrevent } from "../utills/utill";
 
 const Container = styled(motion.div)`
@@ -70,19 +72,15 @@ const ProfileImg = styled.img`
   height: 32px;
   border: 1px solid ${(props) => props.theme.containerLine};
   border-radius: 50%;
+  margin-right: 10px;
 `;
 
 const ProfileId = styled.div`
   padding: 0;
   font-size: 1em;
   font-weight: 600;
-
+  margin-right: 8px;
   color: ${(props) => props.theme.textColor};
-`;
-const FeedContent = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
 `;
 const Comments = styled.div`
   display: flex;
@@ -98,14 +96,31 @@ const Comments = styled.div`
 const Comment = styled.div`
   display: flex;
   flex-direction: row;
+  padding: 8px 16px;
   align-items: center;
 `;
+const CommentContent = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
 const CommentText = styled.div`
-  margin-left: -8px;
   font-weight: 500;
   color: ${(props) => props.theme.textColor};
 `;
 
+const Row = styled.div`
+  display: flex;
+  flex-direction: row;
+  margin: 8px 0;
+`;
+const CommentOption = styled.div`
+  color: ${(props) => props.theme.textLightColor};
+  font-size: 12px;
+  font-weight: 400;
+`;
+const OptionItem = styled.span`
+  cursor: pointer;
+`;
 const BottomFixed = styled.div`
   width: 100%;
   position: absolute;
@@ -116,11 +131,19 @@ function Detail() {
   const location = useLocation();
   const navigate = useNavigate();
   const { feedId } = useParams();
+  const user = useRecoilValue(userAtom);
   const DetailRef = useRef<HTMLDivElement>(null);
 
   const { data, isLoading } = useQuery<IGetFeed>("feed", () =>
     getFeed(feedId as string)
   );
+
+  // const commentDeleteMutation = useMutation(() => commentDelete(likeData), {
+  //   onSettled: () => {
+  //     // queryClient.invalidateQueries("allFeed");
+  //     // queryClient.invalidateQueries("feed");
+  //   },
+  // });
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
@@ -157,50 +180,48 @@ function Detail() {
                           <ProfileImg src={data?.writerProfile.profileImage} />
                         </Link>
                         <Link to={`/${data?.writerProfile.id}`}>
-                          <ProfileId
-                            style={{ marginLeft: "10px", fontWeight: 600 }}
-                          >
-                            {data?.writerProfile.id}
-                          </ProfileId>
+                          <ProfileId>{data?.writerProfile.id}</ProfileId>
                         </Link>
                       </FeedProfile>
                       <Meatballs />
                     </FeedHeader>
                     <Comments>
-                      <FeedContent>
-                        <FeedProfile>
-                          <Link to={`/${data?.writerProfile.id}`}>
-                            <ProfileImg
-                              src={data?.writerProfile.profileImage}
-                            />
-                          </Link>
-                          <Link to={`/${data?.writerProfile.id}`}>
-                            <ProfileId
-                              style={{ marginLeft: "10px", fontWeight: 600 }}
-                            >
-                              {data?.writerProfile.id}
-                            </ProfileId>
-                          </Link>
-                        </FeedProfile>
-                        <CommentText>{data?.content.text}</CommentText>
-                      </FeedContent>
+                      <Comment>
+                        <Link to={`/${data?.writerProfile.id}`}>
+                          <ProfileImg src={data?.writerProfile.profileImage} />
+                        </Link>
+                        <CommentContent>
+                          <Row>
+                            <Link to={`/${data?.writerProfile.id}`}>
+                              <ProfileId>{data?.writerProfile.id}</ProfileId>
+                            </Link>
+                            <CommentText>{data?.content.text}</CommentText>
+                          </Row>
+                        </CommentContent>
+                      </Comment>
                       {data?.comments.map((comment, idx) => (
                         <Comment key={idx}>
-                          <FeedProfile>
-                            <Link to={`/${comment.writerProfile.id}`}>
-                              <ProfileImg
-                                src={comment.writerProfile.profileImage}
-                              />
-                            </Link>
-                            <Link to={`/${comment.writerProfile.id}`}>
-                              <ProfileId
-                                style={{ marginLeft: "10px", fontWeight: 600 }}
-                              >
-                                {comment.writerProfile.id}
-                              </ProfileId>
-                            </Link>
-                          </FeedProfile>
-                          <CommentText>{comment.comment}</CommentText>
+                          <Link to={`/${comment.writerProfile.id}`}>
+                            <ProfileImg
+                              src={comment.writerProfile.profileImage}
+                            />
+                          </Link>
+                          <CommentContent>
+                            <Row>
+                              <Link to={`/${comment.writerProfile.id}`}>
+                                <ProfileId>
+                                  {comment.writerProfile.id}
+                                </ProfileId>
+                              </Link>
+                              <CommentText>{comment.comment}</CommentText>
+                            </Row>
+                            <CommentOption>
+                              {comment.writer === user?._id ||
+                              data.writer === user?._id ? (
+                                <OptionItem>삭제</OptionItem>
+                              ) : null}
+                            </CommentOption>
+                          </CommentContent>
                         </Comment>
                       ))}
                     </Comments>

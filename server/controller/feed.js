@@ -25,10 +25,9 @@ export const feedUpload = (req, res) => {
 };
 export const commentWrite = (req, res) => {
   try {
-    const { feedId } = req.params;
     const comment = req.body;
     Feed.findOneAndUpdate(
-      { _id: feedId },
+      { _id: comment.feedId },
       { $push: { comments: comment } },
       (err, feed) => {
         if (err) throw err;
@@ -144,8 +143,8 @@ export const like = (req, res) => {
   try {
     const token = req.cookies.accessToken;
     const { _id } = jwt.verify(token, process.env.ACCESS_SECRET);
-    const { feedId } = req.params;
-    const { like } = req.body;
+
+    const { like, feedId } = req.body;
     if (like) {
       Feed.findOneAndUpdate(
         { _id: feedId },

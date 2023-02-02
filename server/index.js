@@ -91,8 +91,8 @@ app.get("/api/feed/:feedId/detail", getFeed);
 app.get("/api/feed/:feedId/likelist", getLikeList);
 
 app.post("/api/feed/upload", feedUploadMiddleware, feedUpload);
-app.post("/api/feed/:feedId/comment", commentWrite);
-app.post("/api/feed/:feedId/like", like);
+app.post("/api/feed/comment", commentWrite);
+app.post("/api/feed/like", like);
 
 const port = process.env.PORT;
 app.listen(port, () => {

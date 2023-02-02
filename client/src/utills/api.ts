@@ -116,9 +116,11 @@ export interface IComment {
 }
 
 export async function commentWrite(comment: IComment) {
-  const { feedId, ...other } = comment;
-
-  const request = await axios.post(`/api/feed/${feedId}/comment`, other);
+  const request = await axios.post(`/api/feed/comment`, comment);
+  return request.data;
+}
+export async function commentDelete() {
+  const request = await axios.post(`/api/feed/commentDelete`);
   return request.data;
 }
 
@@ -128,9 +130,7 @@ export interface ILike {
 }
 
 export async function likeUpdate(likeData: ILike) {
-  const { feedId, ...other } = likeData;
-
-  const request = await axios.post(`/api/feed/${feedId}/like`, other);
+  const request = await axios.post(`/api/feed/like`, likeData);
   return request.data;
 }
 
