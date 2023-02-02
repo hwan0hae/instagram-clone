@@ -69,6 +69,8 @@ function Section({ feedId, feedLikeList }: ISection) {
   const [like, setLike] = useState<boolean>(false);
   const [likeListVisible, setLikeListVisible] = useState<boolean>(false);
   const likeData = { like, feedId };
+  const check = feedLikeList.filter((_id) => _id === user?._id);
+
   const likeMutation = useMutation((likeData: ILike) => likeUpdate(likeData), {
     onSettled: () => {
       queryClient.invalidateQueries("allFeed");
@@ -79,40 +81,26 @@ function Section({ feedId, feedLikeList }: ISection) {
   const likeToggleFn = () => {
     setLike((prv) => !prv);
   };
-  //실행되기전 두번클릭 막기?
 
   useDidMountEffect(() => {
     if (like) {
-      if (feedLikeList.length === 0) {
+      if (check.length === 0) {
         likeMutation.mutate(likeData);
-      } else {
-        const check = feedLikeList.filter((_id) => _id === user?._id);
-        if (check.length === 0) {
-          likeMutation.mutate(likeData);
-        }
       }
     } else {
-      feedLikeList.map((_id) => {
-        if (_id === user?._id) {
-          likeMutation.mutate(likeData);
-        }
-      });
+      if (check.length > 0) {
+        likeMutation.mutate(likeData);
+      }
     }
   }, [like]);
 
   useEffect(() => {
-    if (feedLikeList.length === 0) {
-      setLike(false);
+    if (check.length > 0) {
+      setLike(true);
     } else {
-      feedLikeList.map((_id) => {
-        if (_id === user?._id) {
-          setLike(true);
-        } else {
-          setLike(false);
-        }
-      });
+      setLike(false);
     }
-  }, [feedLikeList]);
+  }, [check]);
 
   return (
     <>
