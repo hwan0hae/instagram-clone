@@ -136,9 +136,8 @@ const unVisible = {
   scale: 0,
   opacity: 0,
   transition: {
-    duration: 0.7,
-    type: "spring",
-    stiffness: 220,
+    duration: 0.3,
+    type: "tween",
   },
 };
 function Feed() {
