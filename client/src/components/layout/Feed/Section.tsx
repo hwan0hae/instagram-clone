@@ -1,6 +1,6 @@
 import { ObjectId } from "mongoose";
 import { useEffect, useState } from "react";
-import { useMutation, useQueryClient } from "react-query";
+import { useIsMutating, useMutation, useQueryClient } from "react-query";
 import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { Svg, SvgBtn } from "./Feed";
@@ -66,6 +66,7 @@ function Section({ feedId, feedLikeList }: ISection) {
   const location = useLocation();
   const queryClient = useQueryClient();
   const user = useRecoilValue(userAtom);
+  const isMutating = useIsMutating();
   const [like, setLike] = useState<boolean>(false);
   const [likeListVisible, setLikeListVisible] = useState<boolean>(false);
   const likeData = { like, feedId };
@@ -83,13 +84,15 @@ function Section({ feedId, feedLikeList }: ISection) {
   };
 
   useDidMountEffect(() => {
-    if (like) {
-      if (check.length === 0) {
-        likeMutation.mutate(likeData);
-      }
-    } else {
-      if (check.length > 0) {
-        likeMutation.mutate(likeData);
+    if (!isMutating) {
+      if (like) {
+        if (check.length === 0) {
+          likeMutation.mutate(likeData);
+        }
+      } else {
+        if (check.length > 0) {
+          likeMutation.mutate(likeData);
+        }
       }
     }
   }, [like]);

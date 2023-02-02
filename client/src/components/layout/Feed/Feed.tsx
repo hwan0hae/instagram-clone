@@ -1,6 +1,11 @@
 import styled from "styled-components";
 import { Link, useLocation } from "react-router-dom";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import {
+  useIsMutating,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "react-query";
 import { getAllFeed, IGetFeed, ILike, likeUpdate } from "../../../utills/api";
 import Meatballs from "./Meatballs";
 import CommentWrite from "./CommentWrite";
@@ -141,6 +146,8 @@ function Feed() {
   const queryClient = useQueryClient();
   const user = useRecoilValue(userAtom);
   const { data, isLoading } = useQuery<IGetFeed[]>("allFeed", getAllFeed);
+  const isMutating = useIsMutating();
+
   const likeMutation = useMutation((likeData: ILike) => likeUpdate(likeData), {
     onSettled: () => {
       queryClient.invalidateQueries("allFeed");
@@ -149,17 +156,18 @@ function Feed() {
   });
   const [clickedFeed, setClickedFeed] = useState<ObjectId | null>(null);
 
-  const heartDamping = () => {
+  const heartDamping = (feedId: ObjectId) => {
+    setClickedFeed(feedId);
     setTimeout(() => {
       setClickedFeed(null);
     }, 700);
   };
   const imgDoubleClicked = (feedId: ObjectId, likeList: ObjectId[]) => {
-    setClickedFeed(feedId);
-    heartDamping();
+    heartDamping(feedId);
     const check = likeList.filter((_id) => _id === user?._id);
+
     if (check.length === 0) {
-      likeMutation.mutate({ like: true, feedId });
+      if (!isMutating) likeMutation.mutate({ like: true, feedId });
     }
   };
   return (
