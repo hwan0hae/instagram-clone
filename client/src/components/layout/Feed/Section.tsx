@@ -70,8 +70,6 @@ function Section({ feedId, feedLikeList }: ISection) {
   const [like, setLike] = useState<boolean>(false);
   const [likeListVisible, setLikeListVisible] = useState<boolean>(false);
   const likeData = { like, feedId };
-  const check = feedLikeList.filter((_id) => _id === user?._id);
-
   const likeMutation = useMutation((likeData: ILike) => likeUpdate(likeData), {
     onSettled: () => {
       queryClient.invalidateQueries("allFeed");
@@ -85,6 +83,8 @@ function Section({ feedId, feedLikeList }: ISection) {
   };
 
   useDidMountEffect(() => {
+    const check = feedLikeList.filter((_id) => _id === user?._id);
+
     if (!isMutating) {
       if (like) {
         if (check.length === 0) {
@@ -99,12 +99,14 @@ function Section({ feedId, feedLikeList }: ISection) {
   }, [like]);
 
   useEffect(() => {
+    const check = feedLikeList.filter((_id) => _id === user?._id);
+    console.log("aa");
     if (check.length > 0) {
       setLike(true);
     } else {
       setLike(false);
     }
-  }, [check]);
+  }, [feedLikeList]);
 
   return (
     <>
