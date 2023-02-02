@@ -36,6 +36,7 @@ const FeedSchema = mongoose.Schema({
     {
       type: ObjectId,
       default: null,
+      ref: "User",
     },
   ],
   createDate: {

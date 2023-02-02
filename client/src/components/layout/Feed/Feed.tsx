@@ -1,10 +1,15 @@
 import styled from "styled-components";
 import { Link, useLocation } from "react-router-dom";
-import { useQuery } from "react-query";
-import { getAllFeed, IGetFeed } from "../../../utills/api";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { getAllFeed, IGetFeed, ILike, likeUpdate } from "../../../utills/api";
 import Meatballs from "./Meatballs";
 import CommentWrite from "./CommentWrite";
 import Section from "./Section";
+import { useState } from "react";
+import { ObjectId } from "mongoose";
+import { AnimatePresence, motion } from "framer-motion";
+import { useRecoilValue } from "recoil";
+import { userAtom } from "../../../utills/atoms";
 
 const ProfileImg = styled.img`
   width: 32px;
@@ -72,6 +77,7 @@ export const Svg = styled.svg`
 
 const FeedImgContainer = styled.div`
   line-height: 0;
+  position: relative;
 `;
 const FeedImg = styled.img`
   width: 100%;
@@ -101,9 +107,61 @@ const FeedCommentBox = styled(FeedContentBox)`
   margin-bottom: 0;
 `;
 
+const DoubleClickedHeart = styled(motion.svg)`
+  width: 100px;
+  height: 100px;
+  fill: white;
+  z-index: 100;
+  position: absolute;
+  left: calc(50% - 50px);
+  top: calc(50% - 50px);
+
+  /* transform: translate(-50%, -50%); */
+`;
+const visible = {
+  scale: 1,
+  opacity: 1,
+  transition: {
+    duration: 0.7,
+    type: "spring",
+    stiffness: 220,
+  },
+};
+const unVisible = {
+  scale: 0,
+  opacity: 0,
+  transition: {
+    duration: 0.7,
+    type: "spring",
+    stiffness: 220,
+  },
+};
 function Feed() {
   const location = useLocation();
+  const queryClient = useQueryClient();
+  const user = useRecoilValue(userAtom);
   const { data, isLoading } = useQuery<IGetFeed[]>("allFeed", getAllFeed);
+  const likeMutation = useMutation((likeData: ILike) => likeUpdate(likeData), {
+    onSettled: () => {
+      queryClient.invalidateQueries("allFeed");
+      queryClient.invalidateQueries("feed");
+    },
+  });
+  const [clickedFeed, setClickedFeed] = useState<ObjectId | null>(null);
+
+  const heartDamping = () => {
+    setTimeout(() => {
+      setClickedFeed(null);
+    }, 700);
+  };
+  const imgDoubleClicked = (feedId: ObjectId, likeList: ObjectId[]) => {
+    setClickedFeed(feedId);
+    heartDamping();
+    const check = likeList.filter((_id) => _id === user?._id);
+    if (check.length === 0) {
+      likeMutation.mutate({ like: true, feedId });
+    }
+  };
   return (
     <>
       {isLoading ? null : (
@@ -123,8 +181,23 @@ function Feed() {
                 </FeedProfile>
                 <Meatballs />
               </FeedHeader>
-              <FeedImgContainer>
+              <FeedImgContainer
+                onDoubleClick={() => imgDoubleClicked(feed._id, feed.likeList)}
+              >
                 <FeedImg src={feed.content.feedImage} />
+                <AnimatePresence>
+                  {clickedFeed === feed._id && (
+                    <DoubleClickedHeart
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={visible}
+                      exit={unVisible}
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 512 512"
+                    >
+                      <path d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z" />
+                    </DoubleClickedHeart>
+                  )}
+                </AnimatePresence>
               </FeedImgContainer>
               <Section feedId={feed._id} feedLikeList={feed.likeList} />
               <FeedContentContainer>
