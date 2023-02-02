@@ -23,6 +23,19 @@ export const feedUpload = (req, res) => {
     res.status(500).json({ success: false, error });
   }
 };
+export const feedDelete = (req, res) => {
+  try {
+    const { feedId } = req.body;
+
+    Feed.deleteOne({ _id: feedId }, (err, feed) => {
+      if (err) throw err;
+      res.status(200).json({ success: true });
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error });
+  }
+};
+
 export const commentWrite = (req, res) => {
   try {
     const { feedId, ...comment } = req.body;

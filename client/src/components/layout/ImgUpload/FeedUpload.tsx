@@ -14,6 +14,7 @@ const Container = styled(motion.div)<{ selected: boolean }>`
   background-color: ${(props) => props.theme.menuColor};
   width: ${(props) => (props.selected ? "100%" : "50%")};
   max-width: 1080px;
+  max-height: 910px;
   margin: 40px;
   border-radius: 15px;
   box-shadow: -2px 3px 3px rgba(0, 0, 0, 0.1), -5px 5px 10px rgba(0, 0, 0, 0.03);

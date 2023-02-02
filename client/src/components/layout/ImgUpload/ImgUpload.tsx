@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { useQueryClient } from "react-query";
 import { useRecoilState } from "recoil";
 import { onProfileImgClickedAtom } from "../../../utills/atoms";
-import { Overlay, TabItems } from "../Feed/Meatballs";
+import { Overlay, Modal } from "../Feed/Meatballs";
 import { ModalScrollPrevent } from "../../../utills/utill";
 
 const TabItem = styled.div`
@@ -117,7 +117,7 @@ function ImgUpload() {
       <AnimatePresence>
         {onProfileImgClicked && (
           <Overlay animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <TabItems
+            <Modal
               ref={TabItemsRef}
               initial={{ scale: 1.2 }}
               animate={{ scale: 1 }}
@@ -134,7 +134,7 @@ function ImgUpload() {
               <TabItem onClick={() => setOnProfileImgClicked(false)}>
                 취소
               </TabItem>
-            </TabItems>
+            </Modal>
           </Overlay>
         )}
       </AnimatePresence>

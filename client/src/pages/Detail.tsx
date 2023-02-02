@@ -206,7 +206,7 @@ function Detail() {
                           <ProfileId>{data?.writerProfile.id}</ProfileId>
                         </Link>
                       </FeedProfile>
-                      <Meatballs />
+                      <Meatballs feed={data as IGetFeed} />
                     </FeedHeader>
                     <Comments>
                       <Comment>

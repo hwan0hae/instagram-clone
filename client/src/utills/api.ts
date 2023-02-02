@@ -130,7 +130,12 @@ export async function commentDelete(data: ICommentDelete) {
   const request = await axios.post(`/api/feed/commentdelete`, data);
   return request.data;
 }
-//뭘로비교하징 feedId 로 피드찾고 게시물의 댓글은 뭘로찾음 ... ?
+
+export async function feedDelete(feedId: ObjectId) {
+  const data = { feedId: feedId };
+  const request = await axios.post(`/api/feed/delete`, data);
+  return request.data;
+}
 
 export interface ILike {
   like: boolean;

@@ -1,6 +1,12 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { ObjectId } from "mongoose";
 import { useEffect, useRef, useState } from "react";
+import { useIsMutating, useMutation, useQueryClient } from "react-query";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useRecoilValue } from "recoil";
 import styled from "styled-components";
+import { feedDelete, IGetFeed } from "../../../utills/api";
+import { userAtom } from "../../../utills/atoms";
 import { ModalScrollPrevent } from "../../../utills/utill";
 import { Svg, SvgBtn } from "./Feed";
 
@@ -17,7 +23,7 @@ export const Overlay = styled(motion.div)`
   justify-content: center;
   z-index: 10;
 `;
-export const TabItems = styled(motion.div)`
+export const Modal = styled(motion.div)`
   background-color: ${(props) => props.theme.menuColor};
   width: 400px;
   margin: 40px;
@@ -28,23 +34,16 @@ export const TabItems = styled(motion.div)`
   z-index: 999;
 `;
 
-const TabItem = styled.div`
+const Item = styled.div<{ color?: string }>`
   text-align: center;
   font-size: 16px;
   padding: 12px;
   font-weight: 400;
   cursor: pointer;
 
-  :first-child {
-    border-radius: 15px 15px 0 0;
-  }
-  :last-child {
-    border-radius: 0 0 15px 15px;
-  }
-  :first-child,
-  :nth-child(2) {
-    color: ${(props) => props.theme.red};
-  }
+  color: ${(props) =>
+    props.color === "red" ? props.theme.red : props.theme.textColor};
+
   &:not(:first-child) {
     border-top: 1px solid ${(props) => props.theme.borderLine};
   }
@@ -52,9 +51,32 @@ const TabItem = styled.div`
     background-color: ${(props) => props.theme.bgColor};
   }
 `;
-function Meatballs() {
+
+function Meatballs({ feed }: { feed: IGetFeed }) {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isMutating = useIsMutating();
+  const queryClient = useQueryClient();
+  const user = useRecoilValue(userAtom);
   const [onTabClicked, setOnTabClicked] = useState<boolean>(false);
   const TabItemsRef = useRef<HTMLDivElement>(null);
+  const feedDeleteMutation = useMutation(
+    (feedId: ObjectId) => feedDelete(feedId),
+    {
+      onSettled: () => {
+        setOnTabClicked(false);
+        queryClient.invalidateQueries("allFeed");
+        queryClient.invalidateQueries("feed");
+        queryClient.invalidateQueries("myFeed");
+      },
+    }
+  );
+
+  const FeedDeleteFn = (feedId: ObjectId) => {
+    if (!isMutating) {
+      feedDeleteMutation.mutate(feedId);
+    }
+  };
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
@@ -85,20 +107,41 @@ function Meatballs() {
       <AnimatePresence>
         {onTabClicked && (
           <Overlay animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <TabItems
+            <Modal
               ref={TabItemsRef}
               initial={{ scale: 1.2 }}
               animate={{ scale: 1 }}
             >
-              <TabItem>신고</TabItem>
-              <TabItem>팔로우 취소</TabItem>
-              <TabItem>즐겨찾기에 추가</TabItem>
-              <TabItem>게시물로 이동</TabItem>
-              <TabItem>공유 대상...</TabItem>
-              <TabItem>링크 복사</TabItem>
-              <TabItem>퍼가기</TabItem>
-              <TabItem onClick={() => setOnTabClicked(false)}>취소</TabItem>
-            </TabItems>
+              {feed.writer === user?._id ? (
+                <>
+                  <Item color="red" onClick={() => FeedDeleteFn(feed._id)}>
+                    삭제
+                  </Item>
+                </>
+              ) : (
+                <>
+                  <Item color="red">신고</Item>
+                  <Item color="red">팔로우 취소</Item>
+                </>
+              )}
+
+              {location.state?.backgroundLocation ? null : (
+                <Item
+                  onClick={() =>
+                    navigate(`/feed/${feed._id}`, {
+                      state: { backgroundLocation: location },
+                    })
+                  }
+                >
+                  게시물로 이동
+                </Item>
+              )}
+              <Item>즐겨찾기에 추가</Item>
+              <Item>공유 대상...</Item>
+              <Item>링크 복사</Item>
+              <Item>퍼가기</Item>
+              <Item onClick={() => setOnTabClicked(false)}>취소</Item>
+            </Modal>
           </Overlay>
         )}
       </AnimatePresence>

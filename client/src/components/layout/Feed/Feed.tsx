@@ -186,7 +186,7 @@ function Feed() {
                     </ProfileId>
                   </Link>
                 </FeedProfile>
-                <Meatballs />
+                <Meatballs feed={feed} />
               </FeedHeader>
               <FeedImgContainer
                 onDoubleClick={() => imgDoubleClicked(feed._id, feed.likeList)}
