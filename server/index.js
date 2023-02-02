@@ -23,6 +23,7 @@ import {
   getFeed,
   like,
   getLikeList,
+  commentDelete,
 } from "./controller/feed.js";
 
 const app = express();
@@ -92,6 +93,7 @@ app.get("/api/feed/:feedId/likelist", getLikeList);
 
 app.post("/api/feed/upload", feedUploadMiddleware, feedUpload);
 app.post("/api/feed/comment", commentWrite);
+app.post("/api/feed/commentdelete", commentDelete);
 app.post("/api/feed/like", like);
 
 const port = process.env.PORT;

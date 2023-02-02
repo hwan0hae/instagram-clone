@@ -25,13 +25,30 @@ export const feedUpload = (req, res) => {
 };
 export const commentWrite = (req, res) => {
   try {
-    const comment = req.body;
+    const { feedId, ...comment } = req.body;
+
     Feed.findOneAndUpdate(
-      { _id: comment.feedId },
+      { _id: feedId },
       { $push: { comments: comment } },
       (err, feed) => {
         if (err) throw err;
 
+        res.status(200).json({ success: true });
+      }
+    );
+  } catch (error) {
+    res.status(500).json({ success: false, error });
+  }
+};
+export const commentDelete = (req, res) => {
+  try {
+    const { feedId, _id } = req.body;
+
+    Feed.findOneAndUpdate(
+      { _id: feedId },
+      { $pull: { comments: { _id } } },
+      (err, feed) => {
+        if (err) throw err;
         res.status(200).json({ success: true });
       }
     );

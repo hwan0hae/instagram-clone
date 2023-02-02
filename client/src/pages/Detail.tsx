@@ -1,14 +1,24 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ObjectId } from "mongoose";
 import { useEffect, useRef } from "react";
-import { useMutation, useQuery } from "react-query";
+import {
+  useIsMutating,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "react-query";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import CommentWrite from "../components/layout/Feed/CommentWrite";
 import Meatballs, { Overlay } from "../components/layout/Feed/Meatballs";
 import Section from "../components/layout/Feed/Section";
-import { getFeed, IGetFeed } from "../utills/api";
+import {
+  commentDelete,
+  getFeed,
+  ICommentDelete,
+  IGetFeed,
+} from "../utills/api";
 import { userAtom } from "../utills/atoms";
 import { ModalScrollPrevent } from "../utills/utill";
 
@@ -130,20 +140,33 @@ const BottomFixed = styled.div`
 function Detail() {
   const location = useLocation();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { feedId } = useParams();
   const user = useRecoilValue(userAtom);
   const DetailRef = useRef<HTMLDivElement>(null);
+  const isMutating = useIsMutating();
 
   const { data, isLoading } = useQuery<IGetFeed>("feed", () =>
     getFeed(feedId as string)
   );
 
-  // const commentDeleteMutation = useMutation(() => commentDelete(likeData), {
-  //   onSettled: () => {
-  //     // queryClient.invalidateQueries("allFeed");
-  //     // queryClient.invalidateQueries("feed");
-  //   },
-  // });
+  const commentDeleteMutation = useMutation(
+    (data: ICommentDelete) => commentDelete(data),
+    {
+      onSettled: () => {
+        queryClient.invalidateQueries("allFeed");
+        queryClient.invalidateQueries("feed");
+        queryClient.invalidateQueries("myFeed");
+      },
+    }
+  );
+
+  const commentDeleteFn = (feedId: ObjectId, _id: ObjectId) => {
+    if (!isMutating) {
+      const deleteData = { feedId, _id };
+      commentDeleteMutation.mutate(deleteData);
+    }
+  };
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
@@ -218,7 +241,13 @@ function Detail() {
                             <CommentOption>
                               {comment.writer === user?._id ||
                               data.writer === user?._id ? (
-                                <OptionItem>삭제</OptionItem>
+                                <OptionItem
+                                  onClick={() =>
+                                    commentDeleteFn(data._id, comment._id)
+                                  }
+                                >
+                                  삭제
+                                </OptionItem>
                               ) : null}
                             </CommentOption>
                           </CommentContent>

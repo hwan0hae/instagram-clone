@@ -79,6 +79,7 @@ export interface IGetFeed {
   };
   comments: [
     {
+      _id: ObjectId;
       writer: ObjectId;
       comment: string;
       createDate: Date;
@@ -119,10 +120,17 @@ export async function commentWrite(comment: IComment) {
   const request = await axios.post(`/api/feed/comment`, comment);
   return request.data;
 }
-export async function commentDelete() {
-  const request = await axios.post(`/api/feed/commentDelete`);
+
+export interface ICommentDelete {
+  feedId: ObjectId;
+  _id: ObjectId;
+}
+
+export async function commentDelete(data: ICommentDelete) {
+  const request = await axios.post(`/api/feed/commentdelete`, data);
   return request.data;
 }
+//뭘로비교하징 feedId 로 피드찾고 게시물의 댓글은 뭘로찾음 ... ?
 
 export interface ILike {
   like: boolean;
