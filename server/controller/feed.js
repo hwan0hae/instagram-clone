@@ -1,6 +1,7 @@
-import Feed from "../models/Feed.js";
 import jwt from "jsonwebtoken";
+import fs from "fs";
 import User from "../models/User.js";
+import Feed from "../models/Feed.js";
 
 export const feedUpload = (req, res) => {
   try {
@@ -26,6 +27,23 @@ export const feedUpload = (req, res) => {
 export const feedDelete = (req, res) => {
   try {
     const { feedId } = req.body;
+
+    Feed.findOne({ _id: feedId }, (err, feed) => {
+      if (err) throw err;
+
+      const prvProfileImgPath = feed.content.feedImage;
+      const serverPath = prvProfileImgPath.substring(
+        prvProfileImgPath.indexOf("server")
+      );
+      //교체한 파일 경로에 파일이 존재한다면 파일 삭제
+      if (fs.existsSync(serverPath)) {
+        try {
+          fs.unlinkSync(serverPath);
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    });
 
     Feed.deleteOne({ _id: feedId }, (err, feed) => {
       if (err) throw err;
