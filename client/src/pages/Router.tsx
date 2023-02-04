@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import { useQuery } from "react-query";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import { isLoginAtom, userAtom } from "../utills/atoms";
 import { loginSuccess } from "../utills/api";
 
@@ -16,12 +16,14 @@ import MyPageTagged from "./MyPageTagged";
 import Register from "./Register";
 import Edit from "./Edit";
 import Detail from "./Detail";
+import Profile from "./Profile";
+import ProfileFeed from "./ProfileFeed";
 
 export default function Router() {
   const location = useLocation();
   const state = location.state as { backgroundLocation?: Location };
   const [isLogin, setIsLogin] = useRecoilState<boolean>(isLoginAtom);
-  const setUser = useSetRecoilState(userAtom);
+  const [user, setUser] = useRecoilState(userAtom);
 
   const loginUser = useQuery("LoginSuccess", loginSuccess);
 
@@ -44,9 +46,8 @@ export default function Router() {
             <Route path="/" element={<Home />} />
             {/* <Route path="/feed/:feedId" element={<Home />} /> */}
 
-            <Route path="/:id" element={<MyPage />}>
+            <Route path={`/${user?.id}`} element={<MyPage />}>
               <Route index element={<MyPageFeed />} />
-
               <Route path="reels" element={<MyPageReels />} />
               <Route path="saved" element={<MyPageSaved />} />
               <Route path="tagged" element={<MyPageTagged />} />
@@ -54,6 +55,12 @@ export default function Router() {
 
             <Route path="/edit" element={<Edit />} />
 
+            <Route path=":id" element={<Profile />}>
+              <Route index element={<ProfileFeed />} />
+              <Route path="reels" element={<MyPageReels />} />
+              <Route path="saved" element={<MyPageSaved />} />
+              <Route path="tagged" element={<MyPageTagged />} />
+            </Route>
             {/* <Route path="*" element={<Navigate to="/" />} /> */}
           </Routes>
 

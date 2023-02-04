@@ -14,6 +14,7 @@ import {
   profileDelete,
   profileModification,
   allUser,
+  getProfile,
 } from "./controller/users.js";
 import {
   getAllFeed,
@@ -25,6 +26,7 @@ import {
   getLikeList,
   commentDelete,
   feedDelete,
+  getProfileFeed,
 } from "./controller/feed.js";
 
 const app = express();
@@ -80,6 +82,8 @@ app.get("/api/users/refreshtoken", refreshToken);
 app.get("/api/users/logout", logout);
 
 app.get("/api/users/allUser", allUser);
+app.get("/api/users/:id/profile", getProfile);
+app.get("/api/feed/:id/feed", getProfileFeed);
 
 /** 프로필  */
 app.post("/api/users/profileupload", profileUploadMiddleware, profileUpload);

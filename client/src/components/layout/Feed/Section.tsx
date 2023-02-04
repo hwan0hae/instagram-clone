@@ -100,7 +100,6 @@ function Section({ feedId, feedLikeList }: ISection) {
 
   useEffect(() => {
     const check = feedLikeList.filter((_id) => _id === user?._id);
-    console.log("aa");
     if (check.length > 0) {
       setLike(true);
     } else {

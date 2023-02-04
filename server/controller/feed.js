@@ -103,6 +103,24 @@ export const getMyFeed = (req, res) => {
   }
 };
 
+export const getProfileFeed = (req, res) => {
+  try {
+    const { id } = req.params;
+
+    User.findOne({ id }, (err, user) => {
+      if (err) throw err;
+
+      Feed.find({ writer: user._id }, (err, feed) => {
+        if (err) throw err;
+
+        res.status(200).json(feed);
+      }).sort({ createDate: -1 }); //desc
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error });
+  }
+};
+
 export const getAllFeed = (req, res) => {
   try {
     Feed.find(async (err, feed) => {

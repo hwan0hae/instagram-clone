@@ -1,10 +1,10 @@
 import { useQuery } from "react-query";
 import styled from "styled-components";
-import { getMyFeed, IGetFeed } from "../utills/api";
+import { getMyFeed, getProfileFeed, IGetFeed } from "../utills/api";
 import PacmanLoader from "react-spinners/PacmanLoader";
 import { useRecoilValue } from "recoil";
 import { isDarkAtom } from "../utills/atoms";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 const Container = styled.div`
   width: 100%;
@@ -73,10 +73,13 @@ const Item = styled.div`
   font-weight: 800;
   font-size: 18px;
 `;
-export default function MyPageFeed() {
+export default function ProfileFeed() {
+  const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const { data, isLoading } = useQuery<IGetFeed[]>("myFeed", getMyFeed);
+  const { data, isLoading } = useQuery<IGetFeed[]>("ProfileFeed", () =>
+    getProfileFeed(id as string)
+  );
   const isDarkMode = useRecoilValue<boolean>(isDarkAtom);
 
   return (

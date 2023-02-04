@@ -14,7 +14,6 @@ export interface IAllUser {
 
 export async function allUser() {
   const request = await axios.get("/api/users/allUser");
-
   return request.data;
 }
 export interface ILoginUser {
@@ -106,6 +105,18 @@ export async function getAllFeed() {
 }
 export async function getFeed(feedId: string) {
   const request = await axios.get(`/api/feed/${feedId}/detail`);
+
+  return request.data;
+}
+
+export async function getProfile(id: string) {
+  const request = await axios.get(`/api/users/${id}/profile`);
+
+  return request.data;
+}
+
+export async function getProfileFeed(id: string) {
+  const request = await axios.get(`/api/feed/${id}/feed`);
 
   return request.data;
 }

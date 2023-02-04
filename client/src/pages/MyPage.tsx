@@ -23,7 +23,7 @@ const Container = styled.div`
   width: 100%;
   max-width: 935px;
 `;
-const Profile = styled.div`
+const ProfileContainer = styled.div`
   margin-bottom: 44px;
   width: 100%;
   display: flex;
@@ -166,11 +166,13 @@ const NavItem = styled.div<{ clicked: boolean }>`
 `;
 
 export default function MyPage() {
-  const homeMatch = useMatch("/:id");
-  const reelsMatch = useMatch("/:id/reels");
-  const savedMatch = useMatch("/:id/saved");
-  const taggedMatch = useMatch("/:id/tagged");
   const user = useRecoilValue(userAtom);
+
+  const homeMatch = useMatch(`/${user?.id}`);
+  const reelsMatch = useMatch(`/${user?.id}/reels`);
+  const savedMatch = useMatch(`/${user?.id}/saved`);
+  const taggedMatch = useMatch(`/${user?.id}/tagged`);
+
   const setOnProfileImgClicked = useSetRecoilState<boolean>(
     onProfileImgClickedAtom
   );
@@ -183,7 +185,7 @@ export default function MyPage() {
         {/* meta태그 SEO 검색엔진 */}
       </Helmet>
       <Container>
-        <Profile>
+        <ProfileContainer>
           <ProfileImgContainer>
             <ProfileImg
               src={user?.profileImage}
@@ -210,7 +212,7 @@ export default function MyPage() {
               <ProfileIntroduction defaultValue={user?.introduction} disabled />
             </ProfileContent>
           </ProfileInfo>
-        </Profile>
+        </ProfileContainer>
         <StoryContainer>
           <Storys>
             <Story>
