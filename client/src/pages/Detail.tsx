@@ -56,6 +56,7 @@ const FeedImgContainer = styled.div`
 `;
 const FeedImg = styled.img`
   width: 100%;
+  height: 100%;
 `;
 const ContentsBox = styled.div`
   width: 500px;

@@ -90,6 +90,7 @@ const FeedImgContainer = styled.div`
 `;
 const FeedImg = styled.img`
   width: 100%;
+  height: 100%;
 `;
 
 const FeedContentContainer = styled.div`
