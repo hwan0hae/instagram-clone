@@ -1,4 +1,6 @@
 import { useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
+
 /** 모달 오버레이에서 스크롤 방지 */
 export const ModalScrollPrevent = (modal: boolean = true) => {
   useEffect(() => {
@@ -25,3 +27,13 @@ export const useDidMountEffect = (func: () => any, deps: Array<any>) => {
     else didMount.current = true;
   }, deps);
 };
+
+export function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}

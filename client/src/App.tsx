@@ -5,6 +5,7 @@ import { ThemeProvider, createGlobalStyle } from "styled-components";
 import Router from "./pages/Router";
 import { darkTheme, lightTheme } from "./theme";
 import { isDarkAtom } from "./utills/atoms";
+import { ScrollToTop } from "./utills/utill";
 
 const GlobalStyle = createGlobalStyle`
 html, body, div, span, applet, object, iframe,
@@ -91,6 +92,7 @@ function App() {
         {/* meta태그 SEO 검색엔진 */}
       </Helmet>
       <BrowserRouter basename={process.env.PUBLIC_URL}>
+        <ScrollToTop />
         <Router />
       </BrowserRouter>
     </ThemeProvider>
