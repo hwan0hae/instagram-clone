@@ -64,6 +64,7 @@ function Meatballs({ feed }: { feed: IGetFeed }) {
     (feedId: ObjectId) => feedDelete(feedId),
     {
       onSettled: () => {
+        navigate(location.state?.backgroundLocation.pathname);
         setOnTabClicked(false);
         queryClient.invalidateQueries("allFeed");
         queryClient.invalidateQueries("feed");

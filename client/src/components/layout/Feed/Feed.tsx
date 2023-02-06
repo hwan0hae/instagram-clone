@@ -82,7 +82,11 @@ export const Svg = styled.svg`
 
 const FeedImgContainer = styled.div`
   line-height: 0;
+  aspect-ratio: 1 / 1;
+  max-height: 585px;
   position: relative;
+  display: flex;
+  align-items: center;
 `;
 const FeedImg = styled.img`
   width: 100%;
