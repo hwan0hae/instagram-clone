@@ -92,7 +92,7 @@ function App() {
         {/* meta태그 SEO 검색엔진 */}
       </Helmet>
       <BrowserRouter basename={process.env.PUBLIC_URL}>
-        <ScrollToTop />
+        {/* <ScrollToTop /> */}
         <Router />
       </BrowserRouter>
     </ThemeProvider>

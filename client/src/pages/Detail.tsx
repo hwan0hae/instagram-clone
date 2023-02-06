@@ -172,7 +172,9 @@ function Detail() {
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       if (DetailRef.current && !DetailRef.current.contains(e.target as Node)) {
-        navigate(location.state?.backgroundLocation.pathname);
+        navigate(location.state?.backgroundLocation.pathname, {
+          state: { scroll: "fixed" },
+        });
       }
     };
 

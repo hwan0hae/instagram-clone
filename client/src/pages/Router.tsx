@@ -19,15 +19,18 @@ import Detail from "./Detail";
 import Profile from "./Profile";
 import ProfileFeed from "./ProfileFeed";
 import NotFound from "./NotFound";
+import { ScrollToTop } from "../utills/utill";
 
 export default function Router() {
   const location = useLocation();
-  const state = location.state as { backgroundLocation?: Location };
+  const state = location.state as {
+    backgroundLocation?: Location;
+    scroll?: string;
+  };
   const [isLogin, setIsLogin] = useRecoilState<boolean>(isLoginAtom);
   const [user, setUser] = useRecoilState(userAtom);
 
   const loginUser = useQuery("LoginSuccess", loginSuccess);
-
   useEffect(() => {
     if (loginUser.data?.isAuth) {
       setIsLogin(true);
@@ -42,7 +45,9 @@ export default function Router() {
     <>
       {loginUser.isLoading ? null : isLogin ? (
         <>
+          {state?.backgroundLocation || state?.scroll ? null : <ScrollToTop />}
           <Header />
+
           <Routes location={state?.backgroundLocation || location}>
             <Route path="/" element={<Home />} />
 

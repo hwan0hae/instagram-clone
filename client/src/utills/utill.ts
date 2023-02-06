@@ -28,6 +28,7 @@ export const useDidMountEffect = (func: () => any, deps: Array<any>) => {
   }, deps);
 };
 
+/** 라우터 이동시 스크롤 0,0  */
 export function ScrollToTop() {
   const { pathname } = useLocation();
 
