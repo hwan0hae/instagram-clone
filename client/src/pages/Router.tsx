@@ -18,6 +18,7 @@ import Edit from "./Edit";
 import Detail from "./Detail";
 import Profile from "./Profile";
 import ProfileFeed from "./ProfileFeed";
+import NotFound from "./NotFound";
 
 export default function Router() {
   const location = useLocation();
@@ -44,7 +45,6 @@ export default function Router() {
           <Header />
           <Routes location={state?.backgroundLocation || location}>
             <Route path="/" element={<Home />} />
-            {/* <Route path="/feed/:feedId" element={<Home />} /> */}
 
             <Route path={`/${user?.id}`} element={<MyPage />}>
               <Route index element={<MyPageFeed />} />
@@ -61,7 +61,7 @@ export default function Router() {
               <Route path="saved" element={<MyPageSaved />} />
               <Route path="tagged" element={<MyPageTagged />} />
             </Route>
-            {/* <Route path="*" element={<Navigate to="/" />} /> */}
+            <Route path="*" element={<NotFound />} />
           </Routes>
 
           {state?.backgroundLocation && (
@@ -74,7 +74,7 @@ export default function Router() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          {/* <Route path="*" element={<Navigate to="/" />} /> */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       )}
     </>

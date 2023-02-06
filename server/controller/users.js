@@ -24,8 +24,14 @@ export const getProfile = (req, res) => {
     const { id } = req.params;
     User.findOne({ id }, (err, user) => {
       if (err) throw err;
-      const { password, token, ...others } = user._doc;
-      res.status(200).json(others);
+      if (user === null) {
+        return res
+          .status(200)
+          .json({ success: false, message: "존재하지 않는 ID입니다." });
+      } else {
+        const { password, token, ...others } = user._doc;
+        return res.status(200).json(others);
+      }
     });
   } catch (error) {
     res.status(500).json({ success: false, error });
