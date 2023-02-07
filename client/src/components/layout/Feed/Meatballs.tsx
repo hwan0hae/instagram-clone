@@ -64,7 +64,6 @@ function Meatballs({ feed }: { feed: IGetFeed }) {
     (feedId: ObjectId) => feedDelete(feedId),
     {
       onSettled: () => {
-        navigate(location.state?.backgroundLocation.pathname);
         setOnTabClicked(false);
         queryClient.invalidateQueries("allFeed");
         queryClient.invalidateQueries("feed");
@@ -75,6 +74,12 @@ function Meatballs({ feed }: { feed: IGetFeed }) {
 
   const FeedDeleteFn = (feedId: ObjectId) => {
     if (!isMutating) {
+      if (location.state?.backgroundLocation) {
+        navigate(location.state?.backgroundLocation.pathname, {
+          state: { scroll: "fixed" },
+        });
+      }
+
       feedDeleteMutation.mutate(feedId);
     }
   };

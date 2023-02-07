@@ -15,6 +15,7 @@ import { ObjectId } from "mongoose";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRecoilValue } from "recoil";
 import { userAtom } from "../../../utills/atoms";
+import moment, { MomentInput } from "moment";
 
 const ProfileImg = styled.img`
   width: 32px;
@@ -151,6 +152,10 @@ function Feed() {
   const user = useRecoilValue(userAtom);
   const { data, isLoading } = useQuery<IGetFeed[]>("allFeed", getAllFeed);
   const isMutating = useIsMutating();
+
+  // console.log(
+  //   moment(data?.[0].createDate as MomentInput).format("YYYY--MM-DD hh:mm:ss")
+  // );
 
   const likeMutation = useMutation((likeData: ILike) => likeUpdate(likeData), {
     onSettled: () => {

@@ -30,7 +30,6 @@ export const feedDelete = (req, res) => {
 
     Feed.findOne({ _id: feedId }, (err, feed) => {
       if (err) throw err;
-
       const prvProfileImgPath = feed.content.feedImage;
       const serverPath = prvProfileImgPath.substring(
         prvProfileImgPath.indexOf("server")

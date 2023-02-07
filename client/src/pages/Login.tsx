@@ -161,7 +161,6 @@ export default function Login() {
       Object.keys(errors) as Array<keyof typeof errors>
     ).reduce<keyof typeof errors | null>((field, a) => {
       const fieldKey = field as keyof typeof errors;
-      console.log(`field:${field},a:${a}`);
       return !!errors[fieldKey] ? field : a;
     }, null);
     if (firstError) {
