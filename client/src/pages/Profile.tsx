@@ -153,7 +153,7 @@ export default function Profile() {
   const { data, isLoading } = useQuery("profile", () =>
     getProfile(id as string)
   );
-  // console.log(data> false > notfound);
+
   const homeMatch = useMatch(`/${id}`);
   const reelsMatch = useMatch(`/${id}/reels`);
   const savedMatch = useMatch(`/${id}/saved`);
@@ -168,7 +168,9 @@ export default function Profile() {
 
       {isLoading ? null : (
         <>
-          {data?.success ? (
+          {data?.success === false ? (
+            <NotFound />
+          ) : (
             <Wrapper>
               <Container>
                 <ProfileContainer>
@@ -257,8 +259,6 @@ export default function Profile() {
                 <Outlet />
               </Container>
             </Wrapper>
-          ) : (
-            <NotFound />
           )}
         </>
       )}

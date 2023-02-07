@@ -25,10 +25,11 @@ export const getProfile = (req, res) => {
     User.findOne({ id }, (err, user) => {
       if (err) throw err;
       if (user === null) {
-        return res
-          .status(200)
-          .json({ success: false, message: "존재하지 않는 ID입니다." });
+        console.log("Aa");
+        return res.status(200).json({ success: false });
       } else {
+        console.log("bb");
+
         const { password, token, ...others } = user._doc;
         return res.status(200).json(others);
       }
