@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Date, ObjectId } from "mongoose";
+import { ObjectId } from "mongoose";
 import api from "./apiController";
 
 export interface IAllUser {

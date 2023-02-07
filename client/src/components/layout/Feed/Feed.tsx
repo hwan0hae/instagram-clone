@@ -15,7 +15,7 @@ import { ObjectId } from "mongoose";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRecoilValue } from "recoil";
 import { userAtom } from "../../../utills/atoms";
-import moment, { MomentInput } from "moment";
+import { elapsedTime } from "../../../utills/utill";
 
 const ProfileImg = styled.img`
   width: 32px;
@@ -24,13 +24,26 @@ const ProfileImg = styled.img`
   border-radius: 50%;
   background-color: white;
 `;
+const Row = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 
+  font-size: 1em;
+  font-weight: 600;
+`;
 export const ProfileId = styled.div`
-  padding: 0;
   font-size: 1em;
   font-weight: 600;
 
   color: ${(props) => props.theme.textColor};
+`;
+const ElapsedTime = styled.div`
+  font-size: 1em;
+  font-weight: 600;
+
+  color: ${(props) => props.theme.textLightColor};
 `;
 const FeedContainer = styled.div`
   width: 100%;
@@ -153,10 +166,6 @@ function Feed() {
   const { data, isLoading } = useQuery<IGetFeed[]>("allFeed", getAllFeed);
   const isMutating = useIsMutating();
 
-  // console.log(
-  //   moment(data?.[0].createDate as MomentInput).format("YYYY--MM-DD hh:mm:ss")
-  // );
-
   const likeMutation = useMutation((likeData: ILike) => likeUpdate(likeData), {
     onSettled: () => {
       queryClient.invalidateQueries("allFeed");
@@ -190,11 +199,16 @@ function Feed() {
                   <Link to={`/${feed?.writerProfile.id}`}>
                     <ProfileImg src={feed?.writerProfile.profileImage} />
                   </Link>
-                  <Link to={`/${feed?.writerProfile.id}`}>
-                    <ProfileId style={{ marginLeft: "10px", fontWeight: 600 }}>
-                      {feed?.writerProfile.id}
-                    </ProfileId>
-                  </Link>
+                  <Row>
+                    <Link to={`/${feed?.writerProfile.id}`}>
+                      <ProfileId
+                        style={{ marginLeft: "10px", fontWeight: 600 }}
+                      >
+                        {feed?.writerProfile.id}
+                      </ProfileId>
+                    </Link>
+                    <ElapsedTime>﹒{elapsedTime(feed?.createDate)}</ElapsedTime>
+                  </Row>
                 </FeedProfile>
                 <Meatballs feed={feed} />
               </FeedHeader>

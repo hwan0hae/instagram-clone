@@ -20,7 +20,7 @@ import {
   IGetFeed,
 } from "../utills/api";
 import { userAtom } from "../utills/atoms";
-import { ModalScrollPrevent } from "../utills/utill";
+import { elapsedTime, ModalScrollPrevent } from "../utills/utill";
 
 const Container = styled(motion.div)`
   background-color: ${(props) => props.theme.menuColor};
@@ -122,12 +122,14 @@ const CommentText = styled.div`
 const Row = styled.div`
   display: flex;
   flex-direction: row;
-  margin: 8px 0;
+  margin: 4px 0;
 `;
 const CommentOption = styled.div`
   color: ${(props) => props.theme.textLightColor};
   font-size: 12px;
   font-weight: 400;
+  display: flex;
+  gap: 6px;
 `;
 const OptionItem = styled.span`
   cursor: pointer;
@@ -242,6 +244,7 @@ function Detail() {
                               <CommentText>{comment.comment}</CommentText>
                             </Row>
                             <CommentOption>
+                              {elapsedTime(comment.createDate)}
                               {comment.writer === user?._id ||
                               data.writer === user?._id ? (
                                 <OptionItem

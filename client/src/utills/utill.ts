@@ -1,4 +1,3 @@
-import { Date } from "mongoose";
 import { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 
@@ -42,12 +41,9 @@ export function ScrollToTop() {
 
 /** 경과 시간 */
 export const elapsedTime = (date: Date) => {
-  console.log(date);
-  // const start = new Date(date);
+  const start = new Date(date);
   const end = new Date();
-  console.log(end);
-  // const diff = (end - start) / 1000;
-
+  const diff = ((end as any) - (start as any)) / 1000;
   const times = [
     { name: "년", milliSeconds: 60 * 60 * 24 * 365 },
     { name: "개월", milliSeconds: 60 * 60 * 24 * 30 },
@@ -57,10 +53,10 @@ export const elapsedTime = (date: Date) => {
   ];
 
   for (const value of times) {
-    // const betweenTime = Math.floor(diff / value.milliSeconds);
-    // if (betweenTime > 0) {
-    //   return `${betweenTime}${value.name} 전`;
-    // }
+    const betweenTime = Math.floor(diff / value.milliSeconds);
+    if (betweenTime > 0) {
+      return `${betweenTime}${value.name}`;
+    }
   }
-  return "방금 전";
+  return "방금";
 };
