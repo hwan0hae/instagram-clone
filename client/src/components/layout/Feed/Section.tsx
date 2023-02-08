@@ -7,7 +7,7 @@ import { Svg, SvgBtn } from "./Feed";
 import { ILike, likeUpdate } from "../../../utills/api";
 import { useRecoilValue } from "recoil";
 import { userAtom } from "../../../utills/atoms";
-import { useDidMountEffect } from "../../../utills/utill";
+import { elapsedTime, useDidMountEffect } from "../../../utills/utill";
 import LikeList from "./LikeList";
 const FeedSectionContainer = styled.div`
   display: flex;
@@ -16,7 +16,6 @@ const FeedSectionContainer = styled.div`
 `;
 const FeedSection = styled.div`
   display: flex;
-  flex-direction: row;
   margin-bottom: 6px;
   padding: 6px 0 0 6px;
   justify-content: space-between;
@@ -24,7 +23,7 @@ const FeedSection = styled.div`
 const FeedLikeCount = styled.div`
   font-weight: 600;
   padding: 0px 12px;
-  margin-bottom: 12px;
+  margin-bottom: 4px;
 
   cursor: pointer;
 `;
@@ -57,12 +56,22 @@ const LikeSvg = styled.svg<{ clicked: boolean }>`
   background-color: transparent;
 `;
 
+const ElapsedTime = styled.div`
+  font-size: 10px;
+  font-weight: 400;
+  padding: 0px 12px;
+  margin-bottom: 12px;
+
+  color: ${(props) => props.theme.textLightColor};
+`;
+
 interface ISection {
   feedId: ObjectId;
   feedLikeList: ObjectId[];
+  feedCreate?: Date;
 }
 
-function Section({ feedId, feedLikeList }: ISection) {
+function Section({ feedId, feedLikeList, feedCreate }: ISection) {
   const location = useLocation();
   const queryClient = useQueryClient();
   const user = useRecoilValue(userAtom);
@@ -155,6 +164,9 @@ function Section({ feedId, feedLikeList }: ISection) {
         <FeedLikeCount onClick={() => setLikeListVisible(true)}>
           좋아요 {feedLikeList.length}개
         </FeedLikeCount>
+        {location.state?.backgroundLocation && (
+          <ElapsedTime>{elapsedTime(feedCreate as Date)} 전</ElapsedTime>
+        )}
       </FeedSectionContainer>
       {likeListVisible && (
         <LikeList

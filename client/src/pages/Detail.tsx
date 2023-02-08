@@ -96,7 +96,7 @@ const ProfileId = styled.div`
 const Comments = styled.div`
   display: flex;
   flex-direction: column;
-  height: calc(100% - 201px);
+  height: calc(100% - 225px);
   overflow: scroll;
 
   ::-webkit-scrollbar {
@@ -264,6 +264,7 @@ function Detail() {
                       <Section
                         feedId={data?._id as ObjectId}
                         feedLikeList={data?.likeList as ObjectId[]}
+                        feedCreate={data?.createDate}
                       />
                       <CommentWrite feedId={data?._id as ObjectId} index={0} />
                     </BottomFixed>
