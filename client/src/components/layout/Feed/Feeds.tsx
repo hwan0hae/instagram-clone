@@ -6,7 +6,7 @@ import {
   useQuery,
   useQueryClient,
 } from "react-query";
-import { getAllFeed, IGetFeed, ILike, likeUpdate } from "../../../utills/api";
+import { getHomeFeed, IGetFeed, ILike, likeUpdate } from "../../../utills/api";
 import Meatballs from "./Meatballs";
 import CommentWrite from "./CommentWrite";
 import Section from "./Section";
@@ -159,11 +159,11 @@ const unVisible = {
     type: "tween",
   },
 };
-function Feed() {
+function Feeds() {
   const location = useLocation();
   const queryClient = useQueryClient();
   const user = useRecoilValue(userAtom);
-  const { data, isLoading } = useQuery<IGetFeed[]>("allFeed", getAllFeed);
+  const { data, isLoading } = useQuery<IGetFeed[]>("homeFeed", getHomeFeed);
   const isMutating = useIsMutating();
 
   const likeMutation = useMutation((likeData: ILike) => likeUpdate(likeData), {
@@ -270,4 +270,4 @@ function Feed() {
   );
 }
 
-export default Feed;
+export default Feeds;

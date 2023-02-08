@@ -77,7 +77,7 @@ export default function ProfileFeed() {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const { data, isLoading } = useQuery<IGetFeed[]>("ProfileFeed", () =>
+  const { data, isLoading } = useQuery<IGetFeed[]>("profileFeed", () =>
     getProfileFeed(id as string)
   );
   const isDarkMode = useRecoilValue<boolean>(isDarkAtom);

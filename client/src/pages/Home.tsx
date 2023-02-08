@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Feed from "../components/layout/Feed/Feed";
+import Feed from "../components/layout/Feed/Feeds";
 import StoryHeader from "../components/layout/Feed/StoryHeader";
 
 export const Wrapper = styled.div`

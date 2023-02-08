@@ -98,8 +98,8 @@ export async function getMyFeed() {
   return request.data;
 }
 
-export async function getAllFeed() {
-  const request = await axios.get("/api/feed/feed");
+export async function getHomeFeed() {
+  const request = await axios.get("/api/feed/homefeed");
 
   return request.data;
 }
@@ -159,8 +159,9 @@ export async function likeUpdate(likeData: ILike) {
 }
 
 export interface IGetLikeList {
-  likeList: [
+  list: [
     {
+      _id: ObjectId;
       name: string;
       id: string;
       profileImage: string;
@@ -169,5 +170,26 @@ export interface IGetLikeList {
 }
 export async function getLikeList(feedId: ObjectId) {
   const request = await axios.get(`/api/feed/${feedId}/likelist`);
+  return request.data;
+}
+
+export async function follow(id: ObjectId) {
+  const data = { id: id };
+  const request = await axios.post(`/api/users/follow`, data);
+  return request.data;
+}
+export async function unFollow(id: ObjectId) {
+  const data = { id: id };
+  const request = await axios.post(`/api/users/unfollow`, data);
+  return request.data;
+}
+
+export async function getFollowing(id: ObjectId) {
+  const request = await axios.get(`/api/users/${id}/following`);
+  return request.data;
+}
+
+export async function getFollower(id: ObjectId) {
+  const request = await axios.get(`/api/users/${id}/follower`);
   return request.data;
 }

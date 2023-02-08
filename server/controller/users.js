@@ -2,43 +2,6 @@ import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 import fs from "fs";
 
-export const allUser = (req, res) => {
-  try {
-    User.find((err, users) => {
-      if (err) throw err;
-
-      const allUser = users.map((user) => {
-        const { password, token, ...others } = user._doc;
-
-        return others;
-      });
-      res.status(200).json(allUser);
-    }).sort({ createDate: -1 }); //desc
-  } catch (error) {
-    res.status(500).json({ success: false, error });
-  }
-};
-
-export const getProfile = (req, res) => {
-  try {
-    const { id } = req.params;
-    User.findOne({ id }, (err, user) => {
-      if (err) throw err;
-      if (user === null) {
-        console.log("Aa");
-        return res.status(200).json({ success: false });
-      } else {
-        console.log("bb");
-
-        const { password, token, ...others } = user._doc;
-        return res.status(200).json(others);
-      }
-    });
-  } catch (error) {
-    res.status(500).json({ success: false, error });
-  }
-};
-
 export const register = (req, res) => {
   //회원 가입 할때 필요한 정보들을 client에서 가져오면
   //그것들을 데이터 베이스에 넣어준다.
@@ -289,5 +252,140 @@ export const profileModification = (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export const allUser = (req, res) => {
+  try {
+    User.find((err, users) => {
+      if (err) throw err;
+
+      const allUser = users.map((user) => {
+        const { password, token, ...others } = user._doc;
+
+        return others;
+      });
+      res.status(200).json(allUser);
+    }).sort({ createDate: -1 }); //desc
+  } catch (error) {
+    res.status(500).json({ success: false, error });
+  }
+};
+
+export const getProfile = (req, res) => {
+  try {
+    const { id } = req.params;
+    User.findOne({ id }, (err, user) => {
+      if (err) throw err;
+      if (user === null) {
+        return res.status(200).json({ success: false });
+      } else {
+        const { password, token, ...others } = user._doc;
+        return res.status(200).json(others);
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error });
+  }
+};
+
+export const follow = (req, res) => {
+  try {
+    const token = req.cookies.accessToken;
+    const { _id } = jwt.verify(token, process.env.ACCESS_SECRET);
+    const { id } = req.body;
+    //팔로잉 넣기
+    User.findByIdAndUpdate(
+      { _id },
+      { $push: { following: id } },
+      (err, user) => {
+        if (err) throw err;
+      }
+    );
+    //팔로워 넣기
+    User.findByIdAndUpdate(
+      { _id: id },
+      { $push: { follower: _id } },
+      (err, user) => {
+        if (err) throw err;
+      }
+    );
+    res.status(200).json({ success: true });
+  } catch (error) {
+    res.status(500).json({ success: false, error });
+  }
+};
+
+export const unFollow = (req, res) => {
+  try {
+    const token = req.cookies.accessToken;
+    const { _id } = jwt.verify(token, process.env.ACCESS_SECRET);
+    const { id } = req.body;
+    //팔로잉 삭제
+    User.findByIdAndUpdate(
+      { _id },
+      { $pull: { following: id } },
+      (err, user) => {
+        if (err) throw err;
+      }
+    );
+    //팔로워 삭제
+    User.findByIdAndUpdate(
+      { _id: id },
+      { $pull: { follower: _id } },
+      (err, user) => {
+        if (err) throw err;
+      }
+    );
+    res.status(200).json({ success: true });
+  } catch (error) {
+    res.status(500).json({ success: false, error });
+  }
+};
+
+export const getFollowing = (req, res) => {
+  try {
+    const { id } = req.params;
+
+    User.findOne({ _id: id }, async (err, user) => {
+      if (err) throw err;
+
+      const list = await Promise.all(
+        user.following.map(async (_id) => {
+          const listProfile = await User.find(
+            { _id },
+            { profileImage: 1, id: 1, name: 1, _id: 1 }
+          );
+          return listProfile[0];
+        })
+      );
+
+      res.status(200).json({ success: true, list });
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error });
+  }
+};
+
+export const getFollower = (req, res) => {
+  try {
+    const { id } = req.params;
+
+    User.findOne({ _id: id }, async (err, user) => {
+      if (err) throw err;
+
+      const list = await Promise.all(
+        user.follower.map(async (_id) => {
+          const listProfile = await User.find(
+            { _id },
+            { profileImage: 1, id: 1, name: 1, _id: 1 }
+          );
+          return listProfile[0];
+        })
+      );
+      res.status(200).json({ success: true, list });
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error });
   }
 };

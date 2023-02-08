@@ -7,7 +7,7 @@ import { userAtom } from "../../../utills/atoms";
 import { useEffect, useRef, useState } from "react";
 import { ObjectId } from "mongoose";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
-import { Svg } from "./Feed";
+import { Svg } from "./Feeds";
 
 const CommentWriteBox = styled.div`
   padding: 4px 16px 4px 12px;
@@ -80,7 +80,7 @@ export default function CommentWrite({ feedId, index }: ICommentWrite) {
     (comment: IComment) => commentWrite(comment),
     {
       onSettled: () => {
-        queryClient.invalidateQueries("allFeed");
+        queryClient.invalidateQueries("homeFeed");
         queryClient.invalidateQueries("feed");
       },
     }

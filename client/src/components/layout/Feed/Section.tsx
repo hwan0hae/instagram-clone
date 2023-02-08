@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useIsMutating, useMutation, useQueryClient } from "react-query";
 import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
-import { Svg, SvgBtn } from "./Feed";
+import { Svg, SvgBtn } from "./Feeds";
 import { ILike, likeUpdate } from "../../../utills/api";
 import { useRecoilValue } from "recoil";
 import { userAtom } from "../../../utills/atoms";
@@ -81,9 +81,10 @@ function Section({ feedId, feedLikeList, feedCreate }: ISection) {
   const likeData = { like, feedId };
   const likeMutation = useMutation((likeData: ILike) => likeUpdate(likeData), {
     onSettled: () => {
-      queryClient.invalidateQueries("allFeed");
+      queryClient.invalidateQueries("homeFeed");
       queryClient.invalidateQueries("feed");
       queryClient.invalidateQueries("myFeed");
+      queryClient.invalidateQueries("profileFeed");
     },
   });
 
@@ -92,15 +93,13 @@ function Section({ feedId, feedLikeList, feedCreate }: ISection) {
   };
 
   useDidMountEffect(() => {
-    const check = feedLikeList.filter((_id) => _id === user?._id);
-
     if (!isMutating) {
       if (like) {
-        if (check.length === 0) {
+        if (!feedLikeList.includes(user?._id as ObjectId)) {
           likeMutation.mutate(likeData);
         }
       } else {
-        if (check.length > 0) {
+        if (feedLikeList.includes(user?._id as ObjectId)) {
           likeMutation.mutate(likeData);
         }
       }
@@ -108,8 +107,7 @@ function Section({ feedId, feedLikeList, feedCreate }: ISection) {
   }, [like]);
 
   useEffect(() => {
-    const check = feedLikeList.filter((_id) => _id === user?._id);
-    if (check.length > 0) {
+    if (feedLikeList.includes(user?._id as ObjectId)) {
       setLike(true);
     } else {
       setLike(false);

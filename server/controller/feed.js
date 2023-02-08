@@ -120,45 +120,52 @@ export const getProfileFeed = (req, res) => {
   }
 };
 
-export const getAllFeed = (req, res) => {
+export const getHomeFeed = (req, res) => {
   try {
-    Feed.find(async (err, feed) => {
+    const token = req.cookies.accessToken;
+    const { _id } = jwt.verify(token, process.env.ACCESS_SECRET);
+    //_id > 팔로잉 에 있는 id가 들어간 피드를 가져와야한다.
+    User.findOne({ _id }, (err, user) => {
       if (err) throw err;
 
-      const allFeed = await Promise.all(
-        feed.map(async (feed) => {
-          //피드 작성자 _id 조회해서 작성자 데이터 id + 사진가져와야함
-          const profileData = await User.findOne(
-            { _id: feed.writer },
-            { profileImage: 1, id: 1, _id: 0 }
-          );
+      Feed.find({ writer: { $in: user.following } }, async (err, feed) => {
+        if (err) throw err;
 
-          const comments = await Promise.all(
-            feed.comments.map(async (comment) => {
-              const commentWriterProfile = await User.findOne(
-                { _id: comment.writer },
-                { profileImage: 1, id: 1, _id: 0 }
-              );
+        const allFeed = await Promise.all(
+          feed.map(async (feed) => {
+            //피드 작성자 _id 조회해서 작성자 데이터 id + 사진가져와야함
+            const profileData = await User.findOne(
+              { _id: feed.writer },
+              { profileImage: 1, id: 1, _id: 0 }
+            );
 
-              const commentWriter = {
-                ...comment._doc,
-                writerProfile: commentWriterProfile,
-              };
+            const comments = await Promise.all(
+              feed.comments.map(async (comment) => {
+                const commentWriterProfile = await User.findOne(
+                  { _id: comment.writer },
+                  { profileImage: 1, id: 1, _id: 0 }
+                );
 
-              return commentWriter;
-            })
-          );
-          const feedData = {
-            ...feed._doc,
-            comments,
-            writerProfile: profileData,
-          };
+                const commentWriter = {
+                  ...comment._doc,
+                  writerProfile: commentWriterProfile,
+                };
 
-          return feedData;
-        })
-      );
-      res.status(200).json(allFeed);
-    }).sort({ createDate: -1 }); //desc
+                return commentWriter;
+              })
+            );
+            const feedData = {
+              ...feed._doc,
+              comments,
+              writerProfile: profileData,
+            };
+
+            return feedData;
+          })
+        );
+        res.status(200).json(allFeed);
+      }).sort({ createDate: -1 }); //desc
+    });
   } catch (error) {
     res.status(500).json({ success: false, error });
   }
@@ -245,16 +252,16 @@ export const getLikeList = (req, res) => {
     const { feedId } = req.params;
     Feed.findOne({ _id: feedId }, async (err, feed) => {
       if (err) throw err;
-      const likeList = await Promise.all(
+      const list = await Promise.all(
         feed.likeList.map(async (_id) => {
           const listProfile = await User.find(
             { _id },
-            { profileImage: 1, id: 1, name: 1, _id: 0 }
+            { profileImage: 1, id: 1, name: 1, _id: 1 }
           );
           return listProfile[0];
         })
       );
-      res.status(200).json({ success: true, likeList });
+      res.status(200).json({ success: true, list });
     });
   } catch (error) {
     res.status(500).json({ success: false, error });

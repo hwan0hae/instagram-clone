@@ -15,9 +15,12 @@ import {
   profileModification,
   allUser,
   getProfile,
+  follow,
+  unFollow,
+  getFollowing,
+  getFollower,
 } from "./controller/users.js";
 import {
-  getAllFeed,
   getMyFeed,
   feedUpload,
   commentWrite,
@@ -27,6 +30,7 @@ import {
   commentDelete,
   feedDelete,
   getProfileFeed,
+  getHomeFeed,
 } from "./controller/feed.js";
 
 const app = express();
@@ -83,7 +87,6 @@ app.get("/api/users/logout", logout);
 
 app.get("/api/users/allUser", allUser);
 app.get("/api/users/:id/profile", getProfile);
-app.get("/api/feed/:id/feed", getProfileFeed);
 
 /** 프로필  */
 app.post("/api/users/profileupload", profileUploadMiddleware, profileUpload);
@@ -91,8 +94,9 @@ app.get("/api/users/profiledelete", profileDelete);
 app.post("/api/users/profilemodification", profileModification);
 
 /** 피드  */
+app.get("/api/feed/homefeed", getHomeFeed);
 app.get("/api/feed/myfeed", getMyFeed);
-app.get("/api/feed/feed", getAllFeed);
+app.get("/api/feed/:id/feed", getProfileFeed);
 app.get("/api/feed/:feedId/detail", getFeed);
 app.get("/api/feed/:feedId/likelist", getLikeList);
 
@@ -101,6 +105,12 @@ app.post("/api/feed/delete", feedDelete);
 app.post("/api/feed/comment", commentWrite);
 app.post("/api/feed/commentdelete", commentDelete);
 app.post("/api/feed/like", like);
+
+/** 팔로우 */
+app.post("/api/users/follow", follow);
+app.post("/api/users/unfollow", unFollow);
+app.get("/api/users/:id/following", getFollowing);
+app.get("/api/users/:id/follower", getFollower);
 
 const port = process.env.PORT;
 app.listen(port, () => {

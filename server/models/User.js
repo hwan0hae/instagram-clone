@@ -1,6 +1,10 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+const { Schema } = mongoose;
+const {
+  Types: { ObjectId },
+} = Schema;
 
 const saltRounds = 10;
 const userSchema = mongoose.Schema({
@@ -23,14 +27,25 @@ const userSchema = mongoose.Schema({
     type: String,
     minlength: 8,
   },
-  lastname: {
-    type: String,
-    maxlength: 50,
-  },
   role: {
     type: Number,
     default: 0,
   },
+  following: [
+    {
+      type: ObjectId,
+      default: null,
+      ref: "User",
+    },
+  ],
+  follower: [
+    {
+      type: ObjectId,
+      default: null,
+      ref: "User",
+    },
+  ],
+
   profileImage: {
     type: String,
     default:

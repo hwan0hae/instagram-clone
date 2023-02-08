@@ -5,10 +5,10 @@ import { useIsMutating, useMutation, useQueryClient } from "react-query";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
-import { feedDelete, IGetFeed } from "../../../utills/api";
+import { feedDelete, IGetFeed, unFollow } from "../../../utills/api";
 import { userAtom } from "../../../utills/atoms";
 import { ModalScrollPrevent } from "../../../utills/utill";
-import { Svg, SvgBtn } from "./Feed";
+import { Svg, SvgBtn } from "./Feeds";
 
 export const Overlay = styled(motion.div)`
   position: fixed;
@@ -65,12 +65,17 @@ function Meatballs({ feed }: { feed: IGetFeed }) {
     {
       onSettled: () => {
         setOnTabClicked(false);
-        queryClient.invalidateQueries("allFeed");
+        queryClient.invalidateQueries("homeFeed");
         queryClient.invalidateQueries("feed");
         queryClient.invalidateQueries("myFeed");
       },
     }
   );
+  const unFollowMutation = useMutation((id: ObjectId) => unFollow(id), {
+    onSettled: () => {
+      queryClient.invalidateQueries("LoginSuccess");
+    },
+  });
 
   const FeedDeleteFn = (feedId: ObjectId) => {
     if (!isMutating) {
@@ -81,6 +86,12 @@ function Meatballs({ feed }: { feed: IGetFeed }) {
       }
 
       feedDeleteMutation.mutate(feedId);
+    }
+  };
+  const unFollowFn = () => {
+    if (!isMutating) {
+      setOnTabClicked(false);
+      unFollowMutation.mutate(feed.writer);
     }
   };
 
@@ -97,7 +108,7 @@ function Meatballs({ feed }: { feed: IGetFeed }) {
     return () => window.removeEventListener("mousedown", handleClick);
   }, [TabItemsRef]);
 
-  ModalScrollPrevent(onTabClicked);
+  ModalScrollPrevent(location.state?.backgroundLocation ? false : onTabClicked);
 
   return (
     <>
@@ -127,7 +138,9 @@ function Meatballs({ feed }: { feed: IGetFeed }) {
               ) : (
                 <>
                   <Item color="red">신고</Item>
-                  <Item color="red">팔로우 취소</Item>
+                  <Item color="red" onClick={unFollowFn}>
+                    팔로우 취소
+                  </Item>
                 </>
               )}
 

@@ -12,6 +12,7 @@ export const isLoginAtom = atom<boolean>({
 });
 
 export interface IUser {
+  success?: boolean;
   email: string;
   id: string;
   name: string;
@@ -20,6 +21,8 @@ export interface IUser {
   role: number;
   __v: number;
   _id: ObjectId;
+  follower: ObjectId[];
+  following: ObjectId[];
 }
 
 export const userAtom = atom<IUser | null>({
