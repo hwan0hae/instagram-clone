@@ -21,6 +21,8 @@ import { useEffect, useState } from "react";
 import { useMutation } from "react-query";
 import { IRegistrtUser, registerUser } from "../utills/api";
 import { Helmet } from "react-helmet-async";
+import PacmanLoader from "react-spinners/PacmanLoader";
+
 const Text = styled.h2`
   font-size: 17px;
   font-weight: 600;
@@ -67,7 +69,7 @@ export default function Register() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid, isDirty },
     setFocus,
   } = useForm<IForm>({
     mode: "onChange",
@@ -87,9 +89,15 @@ export default function Register() {
           setRegisterRequestData("");
           navigate("/");
         } else if (data.err.code === 11000) {
-          setRegisterRequestData(
-            "해당 이메일이 이미 존재합니다. 다른 이메일을 입력해주세요."
-          );
+          if (Object.keys(data.err.keyPattern)[0] === "email") {
+            setRegisterRequestData(
+              "해당 이메일이 이미 존재합니다. 다른 이메일을 입력해주세요."
+            );
+          } else if (Object.keys(data.err.keyPattern)[0] === "id") {
+            setRegisterRequestData(
+              "해당 ID가 이미 존재합니다. 다른 이메일을 입력해주세요."
+            );
+          }
         }
       },
     }
@@ -177,7 +185,7 @@ export default function Register() {
             </InputContainer>
             {errors.passwordConfirm && (
               <ErrorText>{errors.passwordConfirm.message}</ErrorText>
-            )}{" "}
+            )}
             <InputContainer>
               <RegisterInput
                 type={passwordType.type}
@@ -186,7 +194,13 @@ export default function Register() {
                 autoComplete="off"
               />
             </InputContainer>
-            <RegisterBtn>가입</RegisterBtn>
+            <RegisterBtn disabled={!(isValid && isDirty)}>
+              {registerMutation.isLoading ? (
+                <PacmanLoader color="white" size="5px" />
+              ) : (
+                "가입"
+              )}
+            </RegisterBtn>
             {registerMutation.isSuccess && (
               <div>
                 <ErrorText style={{ textAlign: "center" }}>

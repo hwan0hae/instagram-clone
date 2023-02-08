@@ -12,6 +12,7 @@ export const darkTheme: DefaultTheme = {
   blue: {
     darkBlue: "#0095F6",
     lightBlue: "#B3DBFF",
+    middleBlue: "#67B6FA",
   },
 };
 
@@ -27,5 +28,6 @@ export const lightTheme: DefaultTheme = {
   blue: {
     darkBlue: "#0095F6",
     lightBlue: "#B3DBFF",
+    middleBlue: "#67B6FA",
   },
 };

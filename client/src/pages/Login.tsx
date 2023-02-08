@@ -73,8 +73,9 @@ export const LoginInput = styled.input`
   padding: 0 8px;
   border-radius: 3px;
 `;
-export const LoginBtn = styled.button`
-  background-color: ${(props) => props.theme.blue.darkBlue};
+export const LoginBtn = styled.button<{ disabled?: boolean }>`
+  background-color: ${(props) =>
+    props.disabled ? props.theme.blue.middleBlue : props.theme.blue.darkBlue};
   color: ${(props) => props.theme.textColor};
   border: none;
   display: flex;
@@ -86,7 +87,7 @@ export const LoginBtn = styled.button`
   border-radius: 5px;
   font-weight: 500;
 
-  cursor: pointer;
+  cursor: ${(props) => (props.disabled ? "default" : "pointer")};
 `;
 export const ErrorText = styled.p`
   color: ${(props) => props.theme.red};
@@ -130,7 +131,7 @@ export default function Login() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid, isDirty },
     setFocus,
   } = useForm<IForm>({
     mode: "onSubmit",
@@ -183,7 +184,6 @@ export default function Login() {
       return { type: "password", visible: false };
     });
   };
-
   return (
     <Wrapper>
       <Helmet>
@@ -225,7 +225,7 @@ export default function Login() {
                 )}
               </PasswordVisibleBtn>
             </InputContainer>
-            <LoginBtn>
+            <LoginBtn disabled={!(isValid && isDirty)}>
               {loginUserMutation.isLoading ? (
                 <PacmanLoader color="white" size="5px" />
               ) : (

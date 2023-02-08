@@ -45,7 +45,7 @@ const ProfileText = styled.span`
   margin-bottom: 3px;
   color: ${(props) => props.theme.textColor};
 `;
-const Profilebtn = styled.button`
+const ProfileBtn = styled.button`
   font-size: 14px;
   font-weight: 600;
   background-color: transparent;
@@ -109,8 +109,9 @@ const FormSubmitBox = styled.div`
   width: 100%;
   margin-top: 32px;
 `;
-const FormSubmitBtn = styled.button`
-  background-color: ${(props) => props.theme.blue.darkBlue};
+const FormSubmitBtn = styled.button<{ disabled?: boolean }>`
+  background-color: ${(props) =>
+    props.disabled ? props.theme.blue.middleBlue : props.theme.blue.darkBlue};
   color: ${(props) => props.theme.textColor};
   padding: 8px 16px;
   font-size: 14px;
@@ -118,7 +119,7 @@ const FormSubmitBtn = styled.button`
   border: none;
   border-radius: 8px;
 
-  cursor: pointer;
+  cursor: ${(props) => (props.disabled ? "default" : "pointer")};
 `;
 
 interface IForm {
@@ -142,7 +143,7 @@ function Edit() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid, isDirty },
     setFocus,
   } = useForm<IForm>({
     mode: "onSubmit",
@@ -210,9 +211,9 @@ function Edit() {
           </SubTitleBox>
           <ContentBox>
             <ProfileText>{user?.id}</ProfileText>
-            <Profilebtn onClick={() => setOnProfileImgClicked(true)}>
+            <ProfileBtn onClick={() => setOnProfileImgClicked(true)}>
               프로필 사진 바꾸기
-            </Profilebtn>
+            </ProfileBtn>
           </ContentBox>
         </ProfileBox>
         <FormBox onSubmit={handleSubmit(onSubmit)}>
@@ -270,7 +271,7 @@ function Edit() {
             </div>
           )}
           <FormSubmitBox>
-            <FormSubmitBtn>제출</FormSubmitBtn>
+            <FormSubmitBtn disabled={!(isValid && isDirty)}>제출</FormSubmitBtn>
           </FormSubmitBox>
         </FormBox>
       </Container>
