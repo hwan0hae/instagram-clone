@@ -8,7 +8,7 @@ import styled from "styled-components";
 import { feedDelete, IGetFeed, unFollow } from "../../../utills/api";
 import { userAtom } from "../../../utills/atoms";
 import { ModalScrollPrevent } from "../../../utills/utill";
-import { Svg, SvgBtn } from "./Feeds";
+import { Svg, SvgBtn } from "./Feed";
 
 export const Overlay = styled(motion.div)`
   position: fixed;

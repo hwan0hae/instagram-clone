@@ -7,7 +7,7 @@ import { userAtom } from "../../../utills/atoms";
 import { useEffect, useRef, useState } from "react";
 import { ObjectId } from "mongoose";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
-import { Svg } from "./Feeds";
+import { Svg } from "./Feed";
 
 const CommentWriteBox = styled.div`
   padding: 4px 16px 4px 12px;

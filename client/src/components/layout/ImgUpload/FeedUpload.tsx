@@ -7,7 +7,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { onFeedUploadClickedAtom, userAtom } from "../../../utills/atoms";
 import { useForm } from "react-hook-form";
 import { Overlay } from "../Feed/Meatballs";
-import { Svg } from "../Feed/Feeds";
+import { Svg } from "../Feed/Feed";
 import { ModalScrollPrevent } from "../../../utills/utill";
 
 const Container = styled(motion.div)<{ selected: boolean }>`

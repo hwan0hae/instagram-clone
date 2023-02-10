@@ -17,7 +17,7 @@ import {
 } from "../../../utills/api";
 import { userAtom } from "../../../utills/atoms";
 import { ModalScrollPrevent } from "../../../utills/utill";
-import { Svg, SvgBtn } from "../Feed/Feeds";
+import { Svg, SvgBtn } from "../Feed/Feed";
 
 const Overlay = styled(motion.div)`
   position: fixed;

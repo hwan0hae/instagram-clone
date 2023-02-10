@@ -2,7 +2,7 @@ import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { allUser, IAllUser } from "../../../utills/api";
-import { ProfileId } from "./Feeds";
+import { ProfileId } from "./Feed";
 
 const StoryContainer = styled.div`
   background-color: ${(props) => props.theme.containerColor};

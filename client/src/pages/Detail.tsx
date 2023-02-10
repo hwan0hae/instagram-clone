@@ -48,7 +48,10 @@ const FeedContainer = styled.div`
 `;
 const FeedImgContainer = styled.div`
   width: calc(100% - 500px);
+  aspect-ratio: 1 / 1;
+
   line-height: 0;
+  position: relative;
   display: flex;
   align-items: center;
   background-color: black;
@@ -56,7 +59,6 @@ const FeedImgContainer = styled.div`
 `;
 const FeedImg = styled.img`
   width: 100%;
-  height: 100%;
 `;
 const ContentsBox = styled.div`
   width: 500px;

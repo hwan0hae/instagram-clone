@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Link, Outlet, useMatch, useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Svg } from "../components/layout/Feed/Feeds";
+import { Svg } from "../components/layout/Feed/Feed";
 import {
   useIsMutating,
   useMutation,
@@ -29,6 +29,13 @@ const Wrapper = styled.div`
     width: calc(100%-244px);
     margin-left: 244px;
   }
+  /** 모바일용 */
+  @media screen and (max-width: 760px) {
+    width: 100%;
+    margin-left: 0;
+    padding: 20px 0;
+    top: 60px;
+  }
 `;
 const Container = styled.div`
   width: 100%;
@@ -51,6 +58,12 @@ const ProfileImg = styled.img`
   height: 150px;
   border-radius: 50%;
   border: 1px solid ${(props) => props.theme.borderLine};
+
+  /** 모바일용 */
+  @media screen and (max-width: 760px) {
+    width: 87px;
+    height: 87px;
+  }
 `;
 const ProfileInfo = styled.div`
   width: 100%;
@@ -164,6 +177,11 @@ const FeedNav = styled.div`
   padding: 0 100px;
   align-items: center;
   justify-content: space-evenly;
+
+  /** 모바일용 */
+  @media screen and (max-width: 760px) {
+    padding: 0;
+  }
 `;
 const NavItem = styled.div<{ clicked: boolean }>`
   display: flex;

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useIsMutating, useMutation, useQueryClient } from "react-query";
 import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
-import { Svg, SvgBtn } from "./Feeds";
+import { Svg, SvgBtn } from "./Feed";
 import { ILike, likeUpdate } from "../../../utills/api";
 import { useRecoilValue } from "recoil";
 import { userAtom } from "../../../utills/atoms";

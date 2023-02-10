@@ -4,14 +4,14 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { onProfileImgClickedAtom, userAtom } from "../utills/atoms";
 import { Helmet } from "react-helmet-async";
 import ImgUpload from "../components/layout/ImgUpload/ImgUpload";
-import { Svg, SvgBtn } from "../components/layout/Feed/Feeds";
+import { Svg, SvgBtn } from "../components/layout/Feed/Feed";
 import { useState } from "react";
 import Following from "../components/layout/Follow/Following";
 import { ObjectId } from "mongoose";
 import Follower from "../components/layout/Follow/Follower";
 
 const Wrapper = styled.div`
-  width: clac(100% - 72px);
+  width: calc(100% - 72px);
   position: relative;
   padding: 30px 20px;
   margin-left: 72px;
@@ -21,6 +21,13 @@ const Wrapper = styled.div`
   @media screen and (min-width: 1250px) {
     width: calc(100%-244px);
     margin-left: 244px;
+  }
+  /** 모바일용 */
+  @media screen and (max-width: 760px) {
+    width: 100%;
+    margin-left: 0;
+    padding: 20px 0;
+    top: 60px;
   }
 `;
 const Container = styled.div`
@@ -38,6 +45,12 @@ const ProfileImgContainer = styled.div`
   padding: 16px 32px;
 
   margin-right: 30px;
+  /** 모바일용 */
+  @media screen and (max-width: 760px) {
+    width: auto;
+    margin-right: 16px;
+    padding: 16px;
+  }
 `;
 const ProfileImg = styled.img`
   width: 150px;
@@ -46,6 +59,12 @@ const ProfileImg = styled.img`
   border: 1px solid ${(props) => props.theme.borderLine};
 
   cursor: pointer;
+
+  /** 모바일용 */
+  @media screen and (max-width: 760px) {
+    width: 87px;
+    height: 87px;
+  }
 `;
 const ProfileInfo = styled.div`
   width: 100%;
@@ -158,6 +177,11 @@ const FeedNav = styled.div`
   padding: 0 100px;
   align-items: center;
   justify-content: space-evenly;
+
+  /** 모바일용 */
+  @media screen and (max-width: 760px) {
+    padding: 0;
+  }
 `;
 const NavItem = styled.div<{ clicked: boolean }>`
   display: flex;

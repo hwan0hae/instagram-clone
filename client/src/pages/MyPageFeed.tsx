@@ -15,6 +15,10 @@ const FeedContainer = styled.div`
   width: 100%;
   gap: 3%;
   flex-wrap: wrap;
+  /** 모바일용 */
+  @media screen and (max-width: 760px) {
+    gap: 1%;
+  }
 `;
 const FeedBox = styled.div`
   width: 31%;
@@ -28,6 +32,11 @@ const FeedBox = styled.div`
     div {
       opacity: 1;
     }
+  }
+
+  /** 모바일용 */
+  @media screen and (max-width: 760px) {
+    width: 33%;
   }
 `;
 const Feed = styled.img`

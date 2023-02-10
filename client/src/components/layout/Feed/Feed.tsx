@@ -159,7 +159,7 @@ const unVisible = {
     type: "tween",
   },
 };
-function Feeds() {
+function Feed() {
   const location = useLocation();
   const queryClient = useQueryClient();
   const user = useRecoilValue(userAtom);
@@ -270,4 +270,4 @@ function Feeds() {
   );
 }
 
-export default Feeds;
+export default Feed;
