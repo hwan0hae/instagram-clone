@@ -48,7 +48,7 @@ const FeedSubmit = styled.button`
   padding: 0;
   margin: 0;
   margin-left: 12px;
-  width: 24px;
+  width: 25px;
   cursor: pointer;
 
   :hover {

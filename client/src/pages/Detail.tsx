@@ -37,6 +37,11 @@ const Container = styled(motion.div)`
   @media screen and (max-width: 1000px) {
     height: 450px;
   }
+
+  /** 모바일용 */
+  @media screen and (max-width: 760px) {
+    width: 70%;
+  }
 `;
 const FeedContainer = styled.div`
   display: flex;
@@ -56,6 +61,11 @@ const FeedImgContainer = styled.div`
   align-items: center;
   background-color: black;
   padding: 20px 0;
+
+  /** 모바일용 */
+  @media screen and (max-width: 760px) {
+    display: none;
+  }
 `;
 const FeedImg = styled.img`
   width: 100%;
