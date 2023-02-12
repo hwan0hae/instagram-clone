@@ -81,7 +81,7 @@ function Section({ feedId, feedLikeList, feedCreate }: ISection) {
   const likeData = { like, feedId };
   const likeMutation = useMutation((likeData: ILike) => likeUpdate(likeData), {
     onSettled: () => {
-      queryClient.invalidateQueries("homeFeed");
+      queryClient.invalidateQueries(["page_feed_list"]);
       queryClient.invalidateQueries("feed");
       queryClient.invalidateQueries("myFeed");
       queryClient.invalidateQueries("profileFeed");

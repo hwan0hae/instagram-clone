@@ -92,17 +92,30 @@ export interface IGetFeed {
   createDate: Date;
 }
 
+interface IGetList {
+  feed_list: IGetFeed[];
+  current_page: number;
+  isLast: boolean;
+}
+
+export async function getList({ pageParam = 0 }) {
+  const request = await axios.get(`/api/feed/list?page=${pageParam}`);
+
+  const data: IGetList = {
+    feed_list: request.data.list,
+    current_page: pageParam,
+    isLast: request.data.last,
+  };
+
+  return data;
+}
+
 export async function getMyFeed() {
   const request = await axios.get("/api/feed/myfeed");
 
   return request.data;
 }
 
-export async function getHomeFeed() {
-  const request = await axios.get("/api/feed/homefeed");
-
-  return request.data;
-}
 export async function getFeed(feedId: string) {
   const request = await axios.get(`/api/feed/${feedId}/detail`);
 

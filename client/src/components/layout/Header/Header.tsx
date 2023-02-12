@@ -10,6 +10,7 @@ const Nav = styled.div`
   flex-direction: column;
   position: fixed;
   left: 0;
+  top: 0;
   background-color: ${(props) => props.theme.containerColor};
   width: 72px;
   border-right: 1px solid ${(props) => props.theme.containerLine};
@@ -25,6 +26,7 @@ const Nav = styled.div`
   @media screen and (max-width: 760px) {
     flex-direction: row;
     left: auto;
+    top: auto;
     bottom: 0;
     height: 50px;
     width: 100vw;

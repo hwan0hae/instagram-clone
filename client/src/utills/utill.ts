@@ -1,5 +1,7 @@
 import { useEffect, useRef } from "react";
+import { useInfiniteQuery } from "react-query";
 import { useLocation } from "react-router-dom";
+import { getList, IGetFeed } from "./api";
 
 /** 모달 오버레이에서 스크롤 방지 */
 export const ModalScrollPrevent = (modal: boolean = true) => {
@@ -18,6 +20,7 @@ export const ModalScrollPrevent = (modal: boolean = true) => {
     };
   }, [modal]);
 };
+
 /** 첫 렌더링 막기 */
 export const useDidMountEffect = (func: () => any, deps: Array<any>) => {
   const didMount = useRef(false);
@@ -59,4 +62,31 @@ export const elapsedTime = (date: Date) => {
     }
   }
   return "방금";
+};
+
+/** home feed 무한 스크롤 쿼리 */
+export const useInfiniteScrollQuery = () => {
+  const {
+    data: getFeed,
+    fetchNextPage: getNextPage,
+    hasNextPage: getNextPageIsPossible,
+    isLoading,
+    remove,
+    refetch,
+  } = useInfiniteQuery(["page_feed_list"], getList, {
+    getNextPageParam: (lastPage, pages) => {
+      if (!lastPage.isLast) return lastPage.current_page + 1;
+      // 마지막 페이지면 undefined가 리턴되어서 hasNextPage는 false가 됨!
+      return undefined;
+    },
+  });
+
+  return {
+    getFeed,
+    getNextPage,
+    getNextPageIsPossible,
+    isLoading,
+    remove,
+    refetch,
+  };
 };

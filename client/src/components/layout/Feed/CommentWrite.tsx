@@ -80,7 +80,7 @@ export default function CommentWrite({ feedId, index }: ICommentWrite) {
     (comment: IComment) => commentWrite(comment),
     {
       onSettled: () => {
-        queryClient.invalidateQueries("homeFeed");
+        queryClient.invalidateQueries(["page_feed_list"]);
         queryClient.invalidateQueries("feed");
       },
     }

@@ -1,21 +1,17 @@
 import styled from "styled-components";
 import { Link, useLocation } from "react-router-dom";
-import {
-  useIsMutating,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "react-query";
-import { getHomeFeed, IGetFeed, ILike, likeUpdate } from "../../../utills/api";
+import { useIsMutating, useMutation, useQueryClient } from "react-query";
+import { ILike, likeUpdate } from "../../../utills/api";
 import Meatballs from "./Meatballs";
 import CommentWrite from "./CommentWrite";
 import Section from "./Section";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ObjectId } from "mongoose";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRecoilValue } from "recoil";
 import { userAtom } from "../../../utills/atoms";
-import { elapsedTime } from "../../../utills/utill";
+import { elapsedTime, useInfiniteScrollQuery } from "../../../utills/utill";
+import { useInView } from "react-intersection-observer";
 
 const ProfileImg = styled.img`
   width: 32px;
@@ -163,16 +159,23 @@ function Feed() {
   const location = useLocation();
   const queryClient = useQueryClient();
   const user = useRecoilValue(userAtom);
-  const { data, isLoading } = useQuery<IGetFeed[]>("homeFeed", getHomeFeed);
   const isMutating = useIsMutating();
-
+  const [ref, isView] = useInView();
+  const [clickedFeed, setClickedFeed] = useState<ObjectId | null>(null);
+  const {
+    getFeed,
+    getNextPage,
+    getNextPageIsPossible,
+    isLoading,
+    remove,
+    refetch,
+  } = useInfiniteScrollQuery();
   const likeMutation = useMutation((likeData: ILike) => likeUpdate(likeData), {
     onSettled: () => {
-      queryClient.invalidateQueries("allFeed");
+      queryClient.invalidateQueries(["page_feed_list"]);
       queryClient.invalidateQueries("feed");
     },
   });
-  const [clickedFeed, setClickedFeed] = useState<ObjectId | null>(null);
 
   const heartDamping = (feedId: ObjectId) => {
     setClickedFeed(feedId);
@@ -182,88 +185,188 @@ function Feed() {
   };
   const imgDoubleClicked = (feedId: ObjectId, likeList: ObjectId[]) => {
     heartDamping(feedId);
-    const check = likeList.filter((_id) => _id === user?._id);
-
-    if (check.length === 0) {
+    if (!likeList.includes(user?._id as ObjectId)) {
       if (!isMutating) likeMutation.mutate({ like: true, feedId });
     }
   };
+
+  useEffect(() => {
+    // 맨 마지막 요소를 보고있고 다음 페이지가 존재하면
+    // 다음 페이지 데이터를 가져옴
+    if (isView && getNextPageIsPossible) {
+      getNextPage();
+    }
+  }, [isView, getFeed]);
+
   return (
     <>
-      {isLoading ? null : (
+      {isLoading && getFeed?.pages ? null : (
         <>
-          {data?.map((feed, index) => (
-            <FeedContainer key={index}>
-              <FeedHeader>
-                <FeedProfile>
-                  <Link to={`/${feed?.writerProfile.id}`}>
-                    <ProfileImg src={feed?.writerProfile.profileImage} />
-                  </Link>
-                  <Row>
-                    <Link to={`/${feed?.writerProfile.id}`}>
-                      <ProfileId
-                        style={{ marginLeft: "10px", fontWeight: 600 }}
-                      >
-                        {feed?.writerProfile.id}
-                      </ProfileId>
-                    </Link>
-                    <ElapsedTime>﹒{elapsedTime(feed?.createDate)}</ElapsedTime>
-                  </Row>
-                </FeedProfile>
-                <Meatballs feed={feed} />
-              </FeedHeader>
-              <FeedImgContainer
-                onDoubleClick={() => imgDoubleClicked(feed._id, feed.likeList)}
-              >
-                <FeedImg src={feed.content.feedImage} />
-                <AnimatePresence>
-                  {clickedFeed === feed._id && (
-                    <DoubleClickedHeart
-                      initial={{ scale: 0, opacity: 0 }}
-                      animate={visible}
-                      exit={unVisible}
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 512 512"
-                    >
-                      <path d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z" />
-                    </DoubleClickedHeart>
-                  )}
-                </AnimatePresence>
-              </FeedImgContainer>
-              <Section feedId={feed._id} feedLikeList={feed.likeList} />
-              <FeedContentContainer>
-                <FeedContentBox>
-                  <Link to={`/${feed?.writerProfile.id}`}>
-                    <ProfileId>{feed?.writerProfile.id}</ProfileId>
-                  </Link>
-                  <FeedText>{feed.content.text}</FeedText>
-                </FeedContentBox>
+          {getFeed?.pages.map((page_data, page_num) => {
+            const feed_list = page_data.feed_list;
 
-                {(feed.comments.length as number) !== 0 ? (
-                  <>
-                    <Link
-                      to={`/feed/${feed._id}`}
-                      state={{ backgroundLocation: location }}
+            return feed_list.map((feed, index) => {
+              if (
+                //마지막 피드에 ref 달아주어 마지막 피드인것 확인
+                getFeed.pages.length - 1 === page_num &&
+                feed_list.length - 1 === index
+              ) {
+                return (
+                  <FeedContainer key={index} ref={ref}>
+                    <FeedHeader>
+                      <FeedProfile>
+                        <Link to={`/${feed?.writerProfile.id}`}>
+                          <ProfileImg src={feed?.writerProfile.profileImage} />
+                        </Link>
+                        <Row>
+                          <Link to={`/${feed?.writerProfile.id}`}>
+                            <ProfileId
+                              style={{ marginLeft: "10px", fontWeight: 600 }}
+                            >
+                              {feed?.writerProfile.id}
+                            </ProfileId>
+                          </Link>
+                          <ElapsedTime>
+                            ﹒{elapsedTime(feed?.createDate)}
+                          </ElapsedTime>
+                        </Row>
+                      </FeedProfile>
+                      <Meatballs feed={feed} />
+                    </FeedHeader>
+                    <FeedImgContainer
+                      onDoubleClick={() =>
+                        imgDoubleClicked(feed._id, feed.likeList)
+                      }
                     >
-                      <FeedComments>
-                        댓글 {feed.comments.length}개 모두 보기
-                      </FeedComments>
-                    </Link>
-                    <FeedCommentBox>
-                      <Link to={`/${feed?.comments[0].writerProfile.id}`}>
-                        <ProfileId>
-                          {feed?.comments[0].writerProfile.id}
-                        </ProfileId>
-                      </Link>
-                      <FeedText>{feed.comments[0].comment}</FeedText>
-                    </FeedCommentBox>
-                  </>
-                ) : null}
-              </FeedContentContainer>
+                      <FeedImg src={feed.content.feedImage} />
+                      <AnimatePresence>
+                        {clickedFeed === feed._id && (
+                          <DoubleClickedHeart
+                            initial={{ scale: 0, opacity: 0 }}
+                            animate={visible}
+                            exit={unVisible}
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 512 512"
+                          >
+                            <path d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z" />
+                          </DoubleClickedHeart>
+                        )}
+                      </AnimatePresence>
+                    </FeedImgContainer>
+                    <Section feedId={feed._id} feedLikeList={feed.likeList} />
+                    <FeedContentContainer>
+                      <FeedContentBox>
+                        <Link to={`/${feed?.writerProfile.id}`}>
+                          <ProfileId>{feed?.writerProfile.id}</ProfileId>
+                        </Link>
+                        <FeedText>{feed.content.text}</FeedText>
+                      </FeedContentBox>
 
-              <CommentWrite feedId={feed._id} index={index} />
-            </FeedContainer>
-          ))}
+                      {(feed.comments.length as number) !== 0 ? (
+                        <>
+                          <Link
+                            to={`/feed/${feed._id}`}
+                            state={{ backgroundLocation: location }}
+                          >
+                            <FeedComments>
+                              댓글 {feed.comments.length}개 모두 보기
+                            </FeedComments>
+                          </Link>
+                          <FeedCommentBox>
+                            <Link to={`/${feed?.comments[0].writerProfile.id}`}>
+                              <ProfileId>
+                                {feed?.comments[0].writerProfile.id}
+                              </ProfileId>
+                            </Link>
+                            <FeedText>{feed.comments[0].comment}</FeedText>
+                          </FeedCommentBox>
+                        </>
+                      ) : null}
+                    </FeedContentContainer>
+
+                    <CommentWrite feedId={feed._id} index={index} />
+                  </FeedContainer>
+                );
+              } else {
+                return (
+                  <FeedContainer key={index}>
+                    <FeedHeader>
+                      <FeedProfile>
+                        <Link to={`/${feed?.writerProfile.id}`}>
+                          <ProfileImg src={feed?.writerProfile.profileImage} />
+                        </Link>
+                        <Row>
+                          <Link to={`/${feed?.writerProfile.id}`}>
+                            <ProfileId
+                              style={{ marginLeft: "10px", fontWeight: 600 }}
+                            >
+                              {feed?.writerProfile.id}
+                            </ProfileId>
+                          </Link>
+                          <ElapsedTime>
+                            ﹒{elapsedTime(feed?.createDate)}
+                          </ElapsedTime>
+                        </Row>
+                      </FeedProfile>
+                      <Meatballs feed={feed} />
+                    </FeedHeader>
+                    <FeedImgContainer
+                      onDoubleClick={() =>
+                        imgDoubleClicked(feed._id, feed.likeList)
+                      }
+                    >
+                      <FeedImg src={feed.content.feedImage} />
+                      <AnimatePresence>
+                        {clickedFeed === feed._id && (
+                          <DoubleClickedHeart
+                            initial={{ scale: 0, opacity: 0 }}
+                            animate={visible}
+                            exit={unVisible}
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 512 512"
+                          >
+                            <path d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z" />
+                          </DoubleClickedHeart>
+                        )}
+                      </AnimatePresence>
+                    </FeedImgContainer>
+                    <Section feedId={feed._id} feedLikeList={feed.likeList} />
+                    <FeedContentContainer>
+                      <FeedContentBox>
+                        <Link to={`/${feed?.writerProfile.id}`}>
+                          <ProfileId>{feed?.writerProfile.id}</ProfileId>
+                        </Link>
+                        <FeedText>{feed.content.text}</FeedText>
+                      </FeedContentBox>
+
+                      {(feed.comments.length as number) !== 0 ? (
+                        <>
+                          <Link
+                            to={`/feed/${feed._id}`}
+                            state={{ backgroundLocation: location }}
+                          >
+                            <FeedComments>
+                              댓글 {feed.comments.length}개 모두 보기
+                            </FeedComments>
+                          </Link>
+                          <FeedCommentBox>
+                            <Link to={`/${feed?.comments[0].writerProfile.id}`}>
+                              <ProfileId>
+                                {feed?.comments[0].writerProfile.id}
+                              </ProfileId>
+                            </Link>
+                            <FeedText>{feed.comments[0].comment}</FeedText>
+                          </FeedCommentBox>
+                        </>
+                      ) : null}
+                    </FeedContentContainer>
+
+                    <CommentWrite feedId={feed._id} index={index} />
+                  </FeedContainer>
+                );
+              }
+            });
+          })}
         </>
       )}
     </>

@@ -65,7 +65,7 @@ function Meatballs({ feed }: { feed: IGetFeed }) {
     {
       onSettled: () => {
         setOnTabClicked(false);
-        queryClient.invalidateQueries("homeFeed");
+        queryClient.invalidateQueries(["page_feed_list"]);
         queryClient.invalidateQueries("feed");
         queryClient.invalidateQueries("myFeed");
       },
