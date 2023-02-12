@@ -133,20 +133,10 @@ const ProfileContent = styled.div`
 const ProfileName = styled.span`
   font-weight: 600;
 `;
-const ProfileIntroduction = styled.textarea`
+const ProfileIntroduction = styled.pre`
   font-weight: 600;
-  background-color: transparent;
-  border: none;
   font-size: 14px;
-  padding: 0;
-  height: 120px;
-  resize: none;
   color: ${(props) => props.theme.textColor};
-
-  /** 모바일용 */
-  @media screen and (max-width: 760px) {
-    height: 48px;
-  }
 `;
 const StoryContainer = styled.div`
   padding: 0 16px;
@@ -298,10 +288,7 @@ export default function MyPage() {
               </ProfileRowBox>
               <ProfileContent>
                 <ProfileName>{user?.name}</ProfileName>
-                <ProfileIntroduction
-                  defaultValue={user?.introduction}
-                  disabled
-                />
+                <ProfileIntroduction>{user?.introduction}</ProfileIntroduction>
               </ProfileContent>
             </ProfileInfo>
           </ProfileContainer>

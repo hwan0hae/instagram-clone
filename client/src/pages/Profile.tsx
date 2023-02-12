@@ -121,14 +121,9 @@ const ProfileContent = styled.div`
 const ProfileName = styled.span`
   font-weight: 600;
 `;
-const ProfileIntroduction = styled.textarea`
+const ProfileIntroduction = styled.pre`
   font-weight: 600;
-  background-color: transparent;
-  border: none;
   font-size: 14px;
-  padding: 0;
-  height: 120px;
-  resize: none;
   color: ${(props) => props.theme.textColor};
 `;
 const StoryContainer = styled.div`
@@ -303,10 +298,9 @@ export default function Profile() {
                       </ProfileRowBox>
                       <ProfileContent>
                         <ProfileName>{data?.name}</ProfileName>
-                        <ProfileIntroduction
-                          defaultValue={data?.introduction}
-                          disabled
-                        />
+                        <ProfileIntroduction>
+                          {data?.introduction}
+                        </ProfileIntroduction>
                       </ProfileContent>
                     </ProfileInfo>
                   </ProfileContainer>
