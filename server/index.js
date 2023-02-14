@@ -30,7 +30,7 @@ import {
   commentDelete,
   feedDelete,
   getProfileFeed,
-  getHomeFeed,
+  getList,
 } from "./controller/feed.js";
 
 const app = express();
@@ -49,7 +49,7 @@ mongoose.set("strictQuery", true);
 mongoose
   .connect(config.mongoURI)
   .then(() => console.log("MongoDB Connect..."))
-  .catch((err) => console.log(err));
+  .catch((err) => consolge.log(err));
 
 const profileStorage = multer.diskStorage({
   //목적지
@@ -94,7 +94,7 @@ app.get("/api/users/profiledelete", profileDelete);
 app.post("/api/users/profilemodification", profileModification);
 
 /** 피드  */
-app.get("/api/feed/homefeed", getHomeFeed);
+app.get("/api/feed/list", getList);
 app.get("/api/feed/myfeed", getMyFeed);
 app.get("/api/feed/:id/feed", getProfileFeed);
 app.get("/api/feed/:feedId/detail", getFeed);

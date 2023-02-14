@@ -120,18 +120,28 @@ export const getProfileFeed = (req, res) => {
   }
 };
 
-export const getHomeFeed = (req, res) => {
+export const getList = (req, res) => {
   try {
     const token = req.cookies.accessToken;
     const { _id } = jwt.verify(token, process.env.ACCESS_SECRET);
-    //_id > 팔로잉 에 있는 id가 들어간 피드를 가져와야한다.
-    User.findOne({ _id }, (err, user) => {
+
+    const { page } = req.query;
+    const maxPost = 10;
+    const skipPost = page * maxPost;
+    let totalPost = 0;
+    let last = false;
+    User.findOne({ _id }, async (err, user) => {
       if (err) throw err;
+
+      totalPost = await Feed.count({ writer: { $in: user.following } });
+      if (totalPost / skipPost < 2) {
+        last = true;
+      }
 
       Feed.find({ writer: { $in: user.following } }, async (err, feed) => {
         if (err) throw err;
 
-        const allFeed = await Promise.all(
+        const list = await Promise.all(
           feed.map(async (feed) => {
             //피드 작성자 _id 조회해서 작성자 데이터 id + 사진가져와야함
             const profileData = await User.findOne(
@@ -163,8 +173,11 @@ export const getHomeFeed = (req, res) => {
             return feedData;
           })
         );
-        res.status(200).json(allFeed);
-      }).sort({ createDate: -1 }); //desc
+        res.status(200).json({ list, last });
+      })
+        .skip(skipPost)
+        .limit(maxPost)
+        .sort({ createDate: -1 }); //desc
     });
   } catch (error) {
     res.status(500).json({ success: false, error });
